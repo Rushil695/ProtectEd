@@ -83,7 +83,7 @@ struct CardView: View {
         {
             GeometryReader { proxy in
                 VStack {
-                    Text("SAFE")
+                    Text("DANGER!!!!")
                         .font(.largeTitle)
                         .padding(.top, 17.0)
                         .foregroundStyle(.white)
@@ -110,14 +110,14 @@ struct CardView: View {
                         .padding(.bottom, 50.0)
                         .padding()
                         VStack {
-                            Text("Current Room : ")
+                            Text("Head to Exit: ")
                                 .foregroundStyle(.white)
                                 .lineLimit(1)
                                 .font(.title)
                                 .bold()
                                 .padding(.top, -45.0)
                                 .padding(.bottom, 34.0)
-                            Text(room)
+                            Text("1")
                                 .foregroundStyle(.white)
                                 .lineLimit(1)
                                 .font(.title)
@@ -125,12 +125,12 @@ struct CardView: View {
                         }
                     }
                     HStack {
-                        Text("Next Class: " + room)
+                        Text("Evacuate Immediately")
                             .font(.custom("Extra", size: 24))
-                            .foregroundStyle(.main)
+                            .foregroundStyle(.red)
                             .padding()
-                        Image(systemName: "arrow.forward").foregroundStyle(.main)
-                            .imageScale(.medium).padding(.leading)
+                        Image(systemName: "arrow.forward").foregroundStyle(.red)
+                            .imageScale(.medium).padding(.trailing)
                     }
                     .background(RoundedRectangle(cornerRadius: 30)).foregroundStyle(.white)
                     
@@ -138,7 +138,7 @@ struct CardView: View {
                     .padding(.top, -57.0)
                     
                 }
-                .background(RoundedRectangle(cornerRadius: 30)).foregroundStyle(.main)
+                .background(RoundedRectangle(cornerRadius: 30)).foregroundStyle(.red)
                 .frame(width: proxy.size.width, height: proxy.size.height / 0.6)
             }
         }
@@ -146,7 +146,7 @@ struct CardView: View {
 }
 
 #Preview {
-    CardView(detection: .constant(false), position: .constant(.camera(
+    CardView(detection: .constant(true), position: .constant(.camera(
         .init(centerCoordinate: CLLocationCoordinate2D(latitude: 37.23125, longitude: -80.42744), distance: 380))),room: .constant("CMSC216") )
 }
 

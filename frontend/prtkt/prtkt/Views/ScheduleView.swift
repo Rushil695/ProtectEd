@@ -4,7 +4,7 @@ import SwiftUI
 
 struct ScheduleView: View {
     @State private var timetable = Timetable()
-    let defaultRoom = Rooms(name: "Unknown", coordinates: [])
+    let defaultRoom = Rooms(name: "", coordinates: [])
 
     var body: some View {
         NavigationStack {
@@ -37,7 +37,7 @@ struct ScheduleView: View {
                     .padding()
                 }
                 .padding()
-            }
+            }.navigationBarBackButtonHidden()
             .navigationBarTitle("Schedule", displayMode: .inline)
         }
     }

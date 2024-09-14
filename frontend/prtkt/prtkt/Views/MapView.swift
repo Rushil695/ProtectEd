@@ -1,127 +1,155 @@
-//
-//  MapView.swift
-//  prtkt
-//
-//  Created by Rushil Madhu on 9/10/24.
-//
-
 import SwiftUI
 import MapKit
 
-// Define a common enum to handle both Room and Exit
-enum MapItem: Identifiable {
-    case room(Room)
-    case exit(Exit)
-    
-    var id: UUID {
-        switch self {
-        case .room(let room):
-            return room.id
-        case .exit(let exit):
-            return exit.id
-        }
-    }
-    
-    var coordinate: CLLocationCoordinate2D {
-        switch self {
-        case .room(let room):
-            return room.coordinate
-        case .exit(let exit):
-            return exit.coordinate
-        }
-    }
-    
-    var title: String {
-        switch self {
-        case .room(let room):
-            return room.name
-        case .exit(let exit):
-            return exit.name
-        }
-    }
-}
-
-struct Room: Identifiable {
-    let id = UUID()
-    let name: String
-    let coordinate: CLLocationCoordinate2D
-}
-
-struct Exit: Identifiable {
-    let id = UUID()
-    let name: String
-    let coordinate: CLLocationCoordinate2D
-}
-
 struct MapView: View {
+    var timetable: Timetable
     @StateObject var mapvm = MapVM()
+    @State private var position: MapCameraPosition = .camera(
+        .init(centerCoordinate: CLLocationCoordinate2D(latitude: 37.23125, longitude: -80.42744), distance: 380))
+    @StateObject var audiovm = AudioClassifier()
+    
+    func getCurrentClass() -> Class? {
+        // let currentDate = Date()
+        // let calendar = Calendar.current
+        // let weekdayIndex = calendar.component(.weekday, from: currentDate)
+        // let weekdayMapping: [Int: Weekday] = [
+        //     2: .monday,
+        //     3: .tuesday,
+        //     4: .wednesday,
+        //     5: .thursday,
+        //     6: .friday]
+        // guard let currentWeekday = weekdayMapping[weekdayIndex],
+        //       let classesToday = timetable.schedule[currentWeekday]
+        // else {
+        //     return nil
+        // }
 
-    @State private var region = MKCoordinateRegion(
-        center: CLLocationCoordinate2D(latitude: 37.2320, longitude: -80.42695),
-        span: MKCoordinateSpan(latitudeDelta: 0.001, longitudeDelta: 0.001)
-    )
-    
-    let rooms = [
-        Room(name: "Room 101", coordinate: CLLocationCoordinate2D(latitude: 38.9897, longitude: -76.9378)),
-        Room(name: "Room 102", coordinate: CLLocationCoordinate2D(latitude: 38.9895, longitude: -76.9379)),
-    ]
-    
-    let exits = [
-        Exit(name: "Exit A", coordinate: CLLocationCoordinate2D(latitude: 38.9899, longitude: -76.9380)),
-        Exit(name: "Exit B", coordinate: CLLocationCoordinate2D(latitude: 38.9894, longitude: -76.9377)),
-    ]
-    
-    @State private var shooterLocation: CLLocationCoordinate2D? = nil
-    var body: some View {
-        // Combine rooms and exits into one array using MapItem enum
-        let mapItems: [MapItem] = rooms.map { MapItem.room($0) } + exits.map { MapItem.exit($0) }
+        // Always set the current weekday to Monday
+        let currentWeekday: Weekday = .monday
+
+        guard let classesToday = timetable.schedule[currentWeekday] else {
+            return nil
+        }
         
-        ZStack {
+        let currentDate = Date()
+        let calendar = Calendar.current
+        
+        return classesToday.first { currentClass in
+            let startComponents = calendar.dateComponents([.hour, .minute], from: currentClass.startTime)
+            let endComponents = calendar.dateComponents([.hour, .minute], from: currentClass.endTime)
+            let nowComponents = calendar.dateComponents([.hour, .minute], from: currentDate)
             
-            // Define bounds for the map using MapCameraBounds
-            let mapBounds = MapCameraBounds(centerCoordinateBounds: region, minimumDistance: 380, maximumDistance: 400)
-            
-            // Map with bounds, interactionModes, and namespace
-            Map(bounds: mapBounds, interactionModes: [.zoom]) {
+            guard let startHour = startComponents.hour,
+                  let startMinute = startComponents.minute,
+                  let endHour = endComponents.hour,
+                  let endMinute = endComponents.minute,
+                  let nowHour = nowComponents.hour,
+                  let nowMinute = nowComponents.minute else {
+                return false
             }
-            .mapStyle(.hybrid)
-                    .edgesIgnoringSafeArea(.all)
-                VStack(alignment: .leading) {
-                    Spacer()
-                    
-                    HStack {
-                        Button(action: {
-                            region = MKCoordinateRegion(
-                                center: CLLocationCoordinate2D(latitude: 37.2320, longitude: -80.42695),
-                                span: MKCoordinateSpan(latitudeDelta: 0.001, longitudeDelta: 0.001)
-                            )
+            
+            let startTotalMinutes = startHour * 60 + startMinute
+            let endTotalMinutes = endHour * 60 + endMinute
+            let nowTotalMinutes = nowHour * 60 + nowMinute
+            
+            return nowTotalMinutes >= startTotalMinutes && nowTotalMinutes <= endTotalMinutes
+        }
+    }
+    
+    var body: some View {
+        GeometryReader { proxy in
+            ZStack {
+                Map(position: $position, interactionModes: [.all]) {
+                    ForEach(mapvm.rooms) { room in
+                        MapPolygon(coordinates: room.coordinates)
+                            .foregroundStyle(room.detected ? .red : .main)
+                        Annotation(room.name, coordinate: room.centerCoordinate) {
+                            
                         }
-                               , label: {
-                            Image(systemName: "location.circle.fill")
-                                .font(.title)
-                            
-                            
-                        })
-                        .frame(width: 60, height: 100)
-                        .padding(.leading, 26.0)
+                    }
+                    ForEach(mapvm.exits) { exit in
+                        Annotation("", coordinate: exit.coordinates) {
+                            Image("exit")
+                                .resizable()
+                                .frame(width: 30, height: 30)
+                        }
+                    }
+                    UserAnnotation()
+                    if let userLocation = mapvm.locationManager.location.coordinate {
+                        Annotation("Your Location", coordinate: userLocation) {
+                            Image(systemName: "location.north.fill")
+                        }
+                    }
+                }
+                .edgesIgnoringSafeArea(.all)
+
+                if let currentClass = getCurrentClass() {
+                    VStack {
                         Spacer()
-                        Text(mapvm.detected ? "Shooter Detected!" : "Safe")
-                            .font(.custom("TYPOGRAPH PRO Light", size: 22))
-                            .frame(width: 180, height: 40)
-                            .padding()
-                            .background(mapvm.detected ? Color.red : Color.green)
-                            .foregroundColor(.white)
-                            .cornerRadius(18)
-                            .padding(.trailing, 62.0)
+                        CardView(detection: $mapvm.shooter.detected, position: $position, room: .constant(currentClass.room.name))
+                            .opacity(0.9)
+                    }
+                } else {
+                    VStack {
                         Spacer()
+                        CardView(detection: $mapvm.shooter.detected, position: $position, room: .constant("No Class"))
+                            .opacity(0.9)
                     }
                 }
             }
-        }
+            .onAppear {
+                mapvm.startPolling()
+            }
+            .onDisappear {
+                mapvm.stopPolling()
+            }
+            .onChange(of: audiovm.detectedSound) { newDetectedSound in
+                if newDetectedSound == "Gunshot" && audiovm.confidence > 0.7 {
+                    mapvm.shooter.detected = true
+                } else {
+                    mapvm.shooter.detected = false
+                }
+            }
+        }.navigationBarBackButtonHidden()
     }
-    
+}
 
 #Preview {
-    MapView()
-}
+    // Create sample rooms with coordinates
+    let sampleRoom1 = Rooms(name: "IAD100",
+        coordinates: [
+            CLLocationCoordinate2D(latitude: 37.23193, longitude: -80.42738),
+            CLLocationCoordinate2D(latitude: 37.23184, longitude: -80.42727),
+            CLLocationCoordinate2D(latitude: 37.23180, longitude: -80.42737),
+            CLLocationCoordinate2D(latitude: 37.23187, longitude: -80.42745)])
     
+    let sampleRoom2 = Rooms(
+        name: "IAD200",
+        coordinates: [
+            CLLocationCoordinate2D(latitude: 37.23200, longitude: -80.42750),
+            CLLocationCoordinate2D(latitude: 37.23195, longitude: -80.42740),
+            CLLocationCoordinate2D(latitude: 37.23190, longitude: -80.42750),
+            CLLocationCoordinate2D(latitude: 37.23195, longitude: -80.42760)])
+    
+    let currentDate = Date()
+    let calendar = Calendar.current
+    
+    let startTime1 = calendar.date(byAdding: .minute, value: -30, to: currentDate)!
+    let endTime1 = calendar.date(byAdding: .minute, value: 30, to: currentDate)!
+    let sampleClass1 = Class(name: "CS101", startTime: startTime1, endTime: endTime1, room: sampleRoom1)
+    
+    let startTime2 = calendar.date(byAdding: .hour, value: -2, to: currentDate)!
+    let endTime2 = calendar.date(byAdding: .hour, value: -1, to: currentDate)!
+    let sampleClass2 = Class(name: "MATH201", startTime: startTime2, endTime: endTime2, room: sampleRoom2)
+    
+    let startTime3 = calendar.date(byAdding: .hour, value: 1, to: currentDate)!
+    let endTime3 = calendar.date(byAdding: .hour, value: 2, to: currentDate)!
+    let sampleClass3 = Class(name: "ENG202", startTime: startTime3, endTime: endTime3, room: sampleRoom1)
+    
+    var sampleTimetable = Timetable()
+    
+    let currentWeekday: Weekday = .monday
+    sampleTimetable.schedule[currentWeekday] = [sampleClass1, sampleClass2, sampleClass3]
+    
+    return MapView(timetable: sampleTimetable)
+}

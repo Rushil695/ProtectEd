@@ -23,14 +23,8 @@ struct Rooms: Identifiable {
 struct Exits: Identifiable {
     let id = UUID()
     let name: String
-    let coordinates: [CLLocationCoordinate2D]
+    let coordinates: CLLocationCoordinate2D
     var highlighted = false
-    
-    var centerCoordinate: CLLocationCoordinate2D {
-           let latitude = coordinates.map { $0.latitude }.reduce(0, +) / Double(coordinates.count)
-           let longitude = coordinates.map { $0.longitude }.reduce(0, +) / Double(coordinates.count)
-           return CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
-       }
 }
 
 enum GHError: Error {

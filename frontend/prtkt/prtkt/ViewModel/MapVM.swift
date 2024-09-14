@@ -19,19 +19,16 @@ class MapVM: ObservableObject {
     @Published var timer: Timer?
     @Published var userLocation: CLLocationCoordinate2D?
     var locationManager = LocationManager()
-    @Published var rooms: [Rooms] = [
-        Rooms(name: "102", coordinates: [
+    @Published var rooms: [Rooms] = [Rooms(name: "102", coordinates: [
             CLLocationCoordinate2D(latitude: 37.23193, longitude: -80.42738),
             CLLocationCoordinate2D(latitude: 37.23184, longitude: -80.42727),
             CLLocationCoordinate2D(latitude: 37.23180, longitude: -80.42737),
             CLLocationCoordinate2D(latitude: 37.23187, longitude: -80.42745)],
-              detected: true)]
-    @Published var exits = [Exits(name: "Main", coordinates: [
+              detected: false)]
+    @Published var exits = [Exits(name: "Main", coordinates:
         CLLocationCoordinate2D(latitude: 37.23193, longitude: -80.42738),
-        CLLocationCoordinate2D(latitude: 37.23195, longitude: -80.42727),
-        CLLocationCoordinate2D(latitude: 37.23196, longitude: -80.4274),
-        CLLocationCoordinate2D(latitude: 37.23187, longitude: -80.42745)],
                           highlighted: false)]
+    
     
     func startPolling() {
         timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in

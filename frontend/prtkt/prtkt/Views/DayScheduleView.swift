@@ -80,7 +80,6 @@ struct DayScheduleView: View {
         ]
     )
     
-    // Sample Classes
     let sampleClasses: [Class] = [
         Class(
             name: "Math 101",

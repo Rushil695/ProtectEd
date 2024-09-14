@@ -8,7 +8,7 @@
 import SwiftUI
 
 @main
-struct prtktApp: App {
+struct ProtectEdApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
