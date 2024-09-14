@@ -60,6 +60,10 @@ class MapVM: ObservableObject {
         }
     }
     
+    func sendGetRequest() async throws {
+        
+    }
+    
     func sendRequestToBackend() async throws -> ShooterStatus {
         guard let url = URL(string: "https://your-backend-api.com/check_shooter_status") else {
             throw GHError.invalidURL

@@ -156,11 +156,11 @@
 		CE06015C2C96348700F37603 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				CE0601572C96348700F37603 /* CardView.swift */,
 				CE0601582C96348700F37603 /* ContentView.swift */,
 				CE0601592C96348700F37603 /* DayScheduleView.swift */,
-				CE06015A2C96348700F37603 /* MapView.swift */,
 				CE06015B2C96348700F37603 /* ScheduleView.swift */,
+				CE06015A2C96348700F37603 /* MapView.swift */,
+				CE0601572C96348700F37603 /* CardView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -171,10 +171,10 @@
 				CE06015F2C96348700F37603 /* Info.plist */,
 				CE0601602C96348700F37603 /* ProtectEdApp.swift */,
 				CE0601522C96348700F37603 /* Models */,
-				CE0601542C96348700F37603 /* Preview Content */,
 				CE0601562C96348700F37603 /* ViewModel */,
 				CE06015C2C96348700F37603 /* Views */,
 				CE06015D2C96348700F37603 /* Assets.xcassets */,
+				CE0601542C96348700F37603 /* Preview Content */,
 				CE06015E2C96348700F37603 /* Gunshot.mlmodel */,
 			);
 			path = ProtectEd;
@@ -492,6 +492,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -521,6 +522,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

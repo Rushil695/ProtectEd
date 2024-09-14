@@ -103,11 +103,9 @@ struct MapView: View {
             .onDisappear {
                 mapvm.stopPolling()
             }
-            .onChange(of: audiovm.detectedSound) { newDetectedSound in
-                if newDetectedSound == "Gunshot" && audiovm.confidence > 0.7 {
+            .onChange(of: audiovm.detectedSound) {
+                if audiovm.detectedSound == "Gunshot" && audiovm.confidence > 0.7 {
                     mapvm.shooter.detected = true
-                } else {
-                    mapvm.shooter.detected = false
                 }
             }
         }.navigationBarBackButtonHidden()
