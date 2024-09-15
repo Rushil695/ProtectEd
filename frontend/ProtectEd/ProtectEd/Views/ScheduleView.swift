@@ -1,45 +1,67 @@
 import SwiftUI
 
-import SwiftUI
-
 struct ScheduleView: View {
     @State private var timetable = Timetable()
     let defaultRoom = Rooms(name: "", coordinates: [])
 
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack {
-                    Text("Enter Your Schedule")
-                        .font(.largeTitle)
-                        .bold()
-                        .padding()
-
-                    ForEach(Weekday.allCases) { day in
-                        DayScheduleView(
-                            classes: Binding(
-                                get: { timetable.schedule[day] ?? [] },
-                                set: { timetable.schedule[day] = $0 }
-                            ),
-                            dayName: day.rawValue.capitalized,
-                            defaultRoom: defaultRoom
-                        )
+           
+                ZStack {
+                    Color.main.opacity(0.8).ignoresSafeArea()
+                    
+                    Circle()
+                        .scale(1.9)
+                        .foregroundColor(.white.opacity(0.3))
+                    
+                    Circle()
+                        .scale(1.4)
+                        .foregroundColor(.white.opacity(0.2))
+                    
+                    
+                        
+                    VStack(alignment: .center) {
+                        Text("Enter Your Schedule")
+                            .frame(width: 300, height: 40)
+                            .font(.system(size: 32))
+                            .fontWeight(.medium)
+                            .shadow(radius: 5)
+                            .foregroundColor(.black)
+                            .bold()
+                            .padding(.top, 45)
+                            .padding(.bottom, 35)
+                        
+                        ScrollView {
+                            ForEach(Weekday.allCases) { day in
+                                DayScheduleView(
+                                    classes: Binding(
+                                        get: { timetable.schedule[day] ?? [] },
+                                        set: { timetable.schedule[day] = $0 }
+                                    ),
+                                    dayName: day.rawValue.capitalized,
+                                    defaultRoom: defaultRoom
+                                )
+                                
+                            }
+                            .padding(.top, 50)
+                        }
+    
+                        .padding(.bottom, 40)
+                        NavigationLink(destination: MapView(timetable: timetable)) {
+                            Text("Go to Map")
+                                .font(.headline)
+                                .frame(width: 100 , height: 30)
+                                .background(Color.main)
+                                .foregroundColor(.white)
+                                .cornerRadius(10)
+                            
+                        }.navigationBarBackButtonHidden()
+                        .padding(.bottom, 50)
+                    
                     }
-
-                    NavigationLink(destination: MapView(timetable: timetable)) {
-                        Text("Go to Map")
-                            .font(.headline)
-                            .padding()
-                            .background(Color.blue)
-                            .foregroundColor(.white)
-                            .cornerRadius(10)
-                    }
-                    .padding()
-                }
-                .padding()
-            }.navigationBarBackButtonHidden()
-            .navigationBarTitle("Schedule", displayMode: .inline)
-        }
+                    
+            }
+        }.background(Color.main)
     }
 }
 #Preview {

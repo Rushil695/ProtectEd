@@ -17,13 +17,11 @@ struct ContentView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                Color.main.opacity(0.8)
-                
-                    .ignoresSafeArea()
+                Color.main.opacity(0.8).ignoresSafeArea()
                 
                 Circle()
                     .scale(1.7)
-                    .foregroundColor(.white.opacity(0.15))
+                    .foregroundColor(.white.opacity(0.4))
                 
                 Circle()
                     .scale(1.35)
@@ -36,10 +34,10 @@ struct ContentView: View {
                         .padding()
                         .foregroundStyle(.black)
                     
-                    TextField("Username", text: $username)
+                    TextField("Email", text: $username)
                         .padding()
                         .frame(width: 300, height: 50)
-                        .background(Color.black.opacity(0.3))
+                        .background(Color.black.opacity(0.1))
                         .cornerRadius(10)
                         .border(Color.red, width: CGFloat(wrongUsername))
                         .textInputAutocapitalization(.never)
@@ -49,9 +47,10 @@ struct ContentView: View {
                     SecureField("Password", text: $password)
                         .padding()
                         .frame(width: 300, height: 50)
-                        .background(Color.black.opacity(0.3))
+                        .background(Color.black.opacity(0.1))
                         .cornerRadius(10)
                         .border(Color.red, width: CGFloat(wrongPassword))
+                    
                     
                     Button(action: {
                         authenticateUser(username: username, password: password)
@@ -61,6 +60,7 @@ struct ContentView: View {
                             .frame(width: 200, height: 50)
                             .background(Color.main)
                             .cornerRadius(10)
+                            .shadow(radius: 2)
                     })
                     .padding()
                     
@@ -76,9 +76,9 @@ struct ContentView: View {
     }
 
     func authenticateUser(username: String, password: String) {
-        if username.lowercased() == "mario2021" {
+        if username.lowercased() == "grover@vt.edu" || username.lowercased() == "grover@vt.edu" || username.lowercased() == "grover@vt.edu"{
             wrongUsername = 0
-            if password.lowercased() == "abc123" {
+            if password.lowercased() == "goHokies" {
                 wrongPassword = 0
                 showingLoginScreen = true
             } else {

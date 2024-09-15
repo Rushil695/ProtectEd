@@ -14,46 +14,51 @@ struct DayScheduleView: View {
     var defaultRoom: Rooms
 
     var body: some View {
+       
         VStack(alignment: .leading) {
+           
             HStack {
+    
                 Text(dayName)
                     .font(.headline)
+                    .frame(width: 100, height: 35)
+                    .background(Color.white.opacity(0.5))
                     .padding()
-                    .background(Color.gray.opacity(0.2))
-                    .cornerRadius(10)
-
-                Spacer()
+                    .foregroundColor(.black)
 
                 Button(action: {
                     classes.append(Class(name: "", startTime: Date(), endTime: Date(), room: defaultRoom))
+                    
                 }) {
                     Image(systemName: "plus.circle.fill")
                         .resizable()
                         .frame(width: 25, height: 25)
-                        .foregroundColor(.blue)
+                        .cornerRadius(15)
+                        .foregroundColor(Color.main.opacity(0.8))
                 }
+               
             }
 
             ForEach($classes) { $classItem in
                 HStack {
+                    
                     TextField("Class Name", text: $classItem.name)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .frame(width: 100)
-
-                    DatePicker("", selection: $classItem.startTime, displayedComponents: .hourAndMinute)
-                        .labelsHidden()
-
-                    DatePicker("", selection: $classItem.endTime, displayedComponents: .hourAndMinute)
-                        .labelsHidden()
-
+                        .frame(width: 150)
+                    
                     TextField("Room", text: $classItem.room.name)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
                         .frame(width: 80)
+               
+                    DatePicker("", selection: $classItem.startTime, displayedComponents: .hourAndMinute)
+                        .labelsHidden()
 
+                    
                     Button(action: {
                         if let index = classes.firstIndex(where: { $0.id == classItem.id }) {
                             classes.remove(at: index)
                         }
+                    
                     }) {
                         Image(systemName: "minus.circle.fill")
                             .resizable()
@@ -63,11 +68,7 @@ struct DayScheduleView: View {
                 }
             }
         }
-        .padding()
-        .background(Color.white.opacity(0.9))
-        .cornerRadius(10)
-        .shadow(radius: 5)
-        .padding(.bottom)
+
     }
 }
 
