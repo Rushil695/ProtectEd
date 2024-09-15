@@ -10,7 +10,7 @@ import MapKit
 
 struct CardView: View {
     @Binding var detection : String
-    
+    @EnvironmentObject var audiovm : AudioClassifier
     @Binding var position : MapCameraPosition
     @Binding var room: String
     
@@ -18,16 +18,20 @@ struct CardView: View {
         if detection == ""  {
             GeometryReader { proxy in
                 VStack {
-                    Text("SAFE")
-                        .font(.largeTitle)
-                        .padding(.top, 17.0)
-                        .foregroundStyle(.white)
-                        .lineLimit(1)
-                        .bold()
+                    Button(action: {
+                        audiovm.start()
+                    }, label: {
+                        Text("SAFE")
+                            .font(.largeTitle)
+                            .padding(.top, 17.0)
+                            .foregroundStyle(.white)
+                            .lineLimit(1)
+                            .bold()
+                        
+                    })
                     RoundedRectangle(cornerRadius: 25.0)
                         .frame(width: 380, height:3)
                         .lineLimit(1)
-                    
                         .foregroundStyle(.white)
                     HStack {
                         
@@ -145,7 +149,7 @@ struct CardView: View {
 }
 
 #Preview {
-    CardView(detection: .constant("Audio"), position: .constant(.camera(
+    CardView(detection: .constant(""), position: .constant(.camera(
         .init(centerCoordinate: CLLocationCoordinate2D(latitude: 37.23125, longitude: -80.42744), distance: 380))),room: .constant("CMSC216") )
 }
 

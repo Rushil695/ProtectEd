@@ -14,7 +14,6 @@ struct Class: Identifiable {
     let id = UUID()
     var name: String
     var startTime: Date
-    var endTime: Date
     var room: Rooms
 }
 

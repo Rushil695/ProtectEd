@@ -12,10 +12,14 @@ class AudioClassifier: NSObject, SNResultsObserving, ObservableObject {
 
     override init() {
         super.init()
+    }
+    
+    func start() {
         setupAudioEngine()
         setupAnalyzer()
     }
-
+    
+    
     func setupAudioEngine() {
         audioEngine = AVAudioEngine()
         guard let audioEngine = audioEngine else { return }

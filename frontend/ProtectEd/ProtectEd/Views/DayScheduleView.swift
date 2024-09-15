@@ -27,7 +27,7 @@ struct DayScheduleView: View {
                     .foregroundColor(.black)
 
                 Button(action: {
-                    classes.append(Class(name: "", startTime: Date(), endTime: Date(), room: defaultRoom))
+                    classes.append(Class(name: "", startTime: Date(), room: defaultRoom))
                     
                 }) {
                     Image(systemName: "plus.circle.fill")
@@ -85,14 +85,12 @@ struct DayScheduleView: View {
         Class(
             name: "Math 101",
             startTime: Date(),
-            endTime: Date().addingTimeInterval(3600), // 1 hour later
             room: sampleRoom
         ),
         Class(
             name: "History 202",
             startTime: Date().addingTimeInterval(7200), // 2 hours later
-            endTime: Date().addingTimeInterval(10800), // 3 hours later
-            room: sampleRoom
+           room: sampleRoom
         )
     ]
     
