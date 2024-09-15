@@ -105,6 +105,8 @@ struct CardView: View {
                                 position = .camera(
                                     .init(centerCoordinate: CLLocationCoordinate2D(latitude: 37.23125, longitude: -80.42744), distance: 380)
                                 )}})
+                        // Goodwin: 37.232537, 80.425654
+                        // New classrom: 37.229204, 80.426814
                         {
                             Image("exit1")
                                 .resizable()
