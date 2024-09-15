@@ -3,8 +3,8 @@
 <plist version="1.0">
 <dict>
 	<key>NSMicrophoneUsageDescription</key>
-	<string></string>
+	<string>We need access to the Microphone to detect intruders</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string></string>
+	<string>We need access to the location </string>
 </dict>
 </plist>

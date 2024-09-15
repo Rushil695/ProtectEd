@@ -55,7 +55,7 @@ class AudioClassifier: NSObject, SNResultsObserving, ObservableObject {
                 self.detectedSound = bestClassification.identifier
                 self.confidence = bestClassification.confidence
             }
-            print("Detected sound: \(bestClassification.identifier) with confidence: \(bestClassification.confidence)")
+            //print("Detected sound: \(bestClassification.identifier) with confidence: \(bestClassification.confidence)")
         }
     }
 
@@ -66,4 +66,24 @@ class AudioClassifier: NSObject, SNResultsObserving, ObservableObject {
     func requestDidComplete(_ request: SNRequest) {
         print("Request completed successfully!")
     }
+    
+    func stopListening() {
+        // Remove the tap on the input node to stop receiving audio buffers
+        audioEngine?.inputNode.removeTap(onBus: 0)
+        
+        // Stop the audio engine
+        audioEngine?.stop()
+        
+        // Remove all requests from the analyzer and deinitialize it
+        analyzer = nil
+        
+        // Optionally, reset the detected sound and confidence
+        DispatchQueue.main.async {
+            self.detectedSound = "Unknown"
+            self.confidence = 0.0
+        }
+        
+        print("Audio classification has been stopped.")
+    }
+
 }
