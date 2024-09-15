@@ -9,51 +9,53 @@ struct MapView: View {
     @StateObject var audiovm = AudioClassifier()
     
     func getCurrentClass() -> Class? {
-        // let currentDate = Date()
-        // let calendar = Calendar.current
-        // let weekdayIndex = calendar.component(.weekday, from: currentDate)
-        // let weekdayMapping: [Int: Weekday] = [
-        //     2: .monday,
-        //     3: .tuesday,
-        //     4: .wednesday,
-        //     5: .thursday,
-        //     6: .friday]
-        // guard let currentWeekday = weekdayMapping[weekdayIndex],
-        //       let classesToday = timetable.schedule[currentWeekday]
-        // else {
-        //     return nil
-        // }
-
-        // Always set the current weekday to Monday
-        let currentWeekday: Weekday = .monday
+        let currentWeekday: Weekday = .monday // Forcing it to Monday for testing purposes
 
         guard let classesToday = timetable.schedule[currentWeekday] else {
+            print("No classes found for \(currentWeekday)")
             return nil
         }
-        
+
         let currentDate = Date()
         let calendar = Calendar.current
-        
-        return classesToday.first { currentClass in
-            let startComponents = calendar.dateComponents([.hour, .minute], from: currentClass.startTime)
-            let endComponents = calendar.dateComponents([.hour, .minute], from: currentClass.endTime)
-            let nowComponents = calendar.dateComponents([.hour, .minute], from: currentDate)
-            
-            guard let startHour = startComponents.hour,
-                  let startMinute = startComponents.minute,
-                  let endHour = endComponents.hour,
-                  let endMinute = endComponents.minute,
-                  let nowHour = nowComponents.hour,
-                  let nowMinute = nowComponents.minute else {
-                return false
-            }
-            
-            let startTotalMinutes = startHour * 60 + startMinute
-            let endTotalMinutes = endHour * 60 + endMinute
-            let nowTotalMinutes = nowHour * 60 + nowMinute
-            
-            return nowTotalMinutes >= startTotalMinutes && nowTotalMinutes <= endTotalMinutes
+        let nowComponents = calendar.dateComponents([.hour, .minute], from: currentDate)
+        guard let nowHour = nowComponents.hour, let nowMinute = nowComponents.minute else {
+            print("Could not get current time components")
+            return nil
         }
+        let nowTotalMinutes = nowHour * 60 + nowMinute
+
+        for (index, currentClass) in classesToday.enumerated() {
+            let startComponents = calendar.dateComponents([.hour, .minute], from: currentClass.startTime)
+            guard let startHour = startComponents.hour, let startMinute = startComponents.minute else {
+                continue
+            }
+            let startTotalMinutes = startHour * 60 + startMinute
+
+            // If this is the last class of the day, treat it as spanning to the end of the day
+            if index == classesToday.count - 1 {
+                if nowTotalMinutes >= startTotalMinutes {
+                    print("Current class found: \(currentClass.name)")
+                    return currentClass
+                }
+            } else {
+                // Get the next class to treat its start as the end of the current class
+                let nextClass = classesToday[index + 1]
+                let nextStartComponents = calendar.dateComponents([.hour, .minute], from: nextClass.startTime)
+                guard let nextStartHour = nextStartComponents.hour, let nextStartMinute = nextStartComponents.minute else {
+                    continue
+                }
+                let nextStartTotalMinutes = nextStartHour * 60 + nextStartMinute
+
+                if nowTotalMinutes >= startTotalMinutes && nowTotalMinutes < nextStartTotalMinutes {
+                    print("Current class found: \(currentClass.name)")
+                    return currentClass
+                }
+            }
+        }
+        
+        print("No current class matches the current time")
+        return nil
     }
     
     var body: some View {
@@ -74,7 +76,6 @@ struct MapView: View {
                                 .frame(width: 30, height: 30)
                         }
                     }
-                    UserAnnotation()
                     if let userLocation = mapvm.locationManager.location.coordinate {
                         Annotation("Your Location", coordinate: userLocation) {
                             Image(systemName: "location.north.fill")
@@ -88,12 +89,14 @@ struct MapView: View {
                         Spacer()
                         
                         CardView(detection: $mapvm.shooterdetection, position: $position, room: .constant(currentClass.room.name))
+                            .environmentObject(audiovm)
                             .opacity(0.9)
                     }
                 } else {
                     VStack {
                         Spacer()
                         CardView(detection: $mapvm.shooterdetection, position: $position, room: .constant("No Class"))
+                            .environmentObject(audiovm)
                             .opacity(0.9)
                     }
                 }
@@ -111,7 +114,7 @@ struct MapView: View {
                     
                     audiovm.stopListening()
                     Task {
-                        await mapvm.shooterDetected(roomnumber: getCurrentClass()?.room.name ?? "DND101")}
+                        await mapvm.shooterDetected(roomnumber: getCurrentClass()?.room.name ?? "x")}
                 }
             }
         }.navigationBarBackButtonHidden()
@@ -140,15 +143,15 @@ struct MapView: View {
     
     let startTime1 = calendar.date(byAdding: .minute, value: -30, to: currentDate)!
     let endTime1 = calendar.date(byAdding: .minute, value: 30, to: currentDate)!
-    let sampleClass1 = Class(name: "CS101", startTime: startTime1, endTime: endTime1, room: sampleRoom1)
+    let sampleClass1 = Class(name: "CS101", startTime: startTime1, room: sampleRoom1)
     
     let startTime2 = calendar.date(byAdding: .hour, value: -2, to: currentDate)!
     let endTime2 = calendar.date(byAdding: .hour, value: -1, to: currentDate)!
-    let sampleClass2 = Class(name: "MATH201", startTime: startTime2, endTime: endTime2, room: sampleRoom2)
+    let sampleClass2 = Class(name: "MATH201", startTime: startTime2, room: sampleRoom2)
     
     let startTime3 = calendar.date(byAdding: .hour, value: 1, to: currentDate)!
     let endTime3 = calendar.date(byAdding: .hour, value: 2, to: currentDate)!
-    let sampleClass3 = Class(name: "ENG202", startTime: startTime3, endTime: endTime3, room: sampleRoom1)
+    let sampleClass3 = Class(name: "ENG202", startTime: startTime3, room: sampleRoom1)
     
     var sampleTimetable = Timetable()
     

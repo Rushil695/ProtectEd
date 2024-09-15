@@ -104,7 +104,7 @@ class MapVM: ObservableObject {
     
     //sends the post requests every second
     func startPolling() {
-        timer = Timer.scheduledTimer(withTimeInterval: 3.0, repeats: true) { _ in
+        timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
             Task {
                 do {
                     let shooterStatus = try await self.sendGetRequest1second()

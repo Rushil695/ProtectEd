@@ -98,9 +98,13 @@ struct ContentView: View {
     }
 
     func authenticateUser(username: String, password: String) {
+<<<<<<< HEAD
         if username.lowercased() == "grover@vt.edu" || username.lowercased() == "madhu@vt.edu" || username.lowercased() == "choudhary@vt.edu"{
+=======
+        if username.lowercased() == "grover@vt.edu" || username.lowercased() == "rushil@vt.edu" || username.lowercased() == "advay@vt.edu"{
+>>>>>>> ac01d464d2ccd91d0bbb79b34438f5c5e49925ef
             wrongUsername = 0
-            if password.lowercased() == "goHokies" {
+            if password.lowercased() == "rest" {
                 wrongPassword = 0
                 showingLoginScreen = true
             } else {

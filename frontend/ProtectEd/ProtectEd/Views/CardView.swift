@@ -11,7 +11,7 @@ import Foundation
 
 struct CardView: View {
     @Binding var detection : String
-    
+    @EnvironmentObject var audiovm : AudioClassifier
     @Binding var position : MapCameraPosition
     @Binding var room: String
     
@@ -19,6 +19,7 @@ struct CardView: View {
         if detection == ""  {
             GeometryReader { proxy in
                 VStack {
+<<<<<<< HEAD
                     Text(" YOU ARE SAFE")
                         .font(.title)
                         .padding(.top, 17.0)
@@ -31,6 +32,22 @@ struct CardView: View {
                         .padding(.bottom, 20)
                         .foregroundStyle(.white)
                     
+=======
+                    Button(action: {
+                        audiovm.start()
+                    }, label: {
+                        Text("SAFE")
+                            .font(.largeTitle)
+                            .padding(.top, 17.0)
+                            .foregroundStyle(.white)
+                            .lineLimit(1)
+                            .bold()
+                        
+                    })
+                    RoundedRectangle(cornerRadius: 25.0)
+                        .frame(width: 380, height:3)
+                        .lineLimit(1)
+>>>>>>> ac01d464d2ccd91d0bbb79b34438f5c5e49925ef
                         .foregroundStyle(.white)
                     HStack {
                         
@@ -103,6 +120,8 @@ struct CardView: View {
                                 position = .camera(
                                     .init(centerCoordinate: CLLocationCoordinate2D(latitude: 37.23125, longitude: -80.42744), distance: 380)
                                 )}})
+                        // Goodwin: 37.232537, 80.425654
+                        // New classrom: 37.229204, 80.426814
                         {
                             Image("exit1").resizable()
                                 
