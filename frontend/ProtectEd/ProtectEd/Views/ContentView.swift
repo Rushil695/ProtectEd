@@ -17,7 +17,7 @@ struct ContentView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                Color.main.opacity(0.8).ignoresSafeArea()
+                Color.main.opacity(0.9).ignoresSafeArea()
                 
                 Circle()
                     .scale(1.7)
@@ -28,28 +28,49 @@ struct ContentView: View {
                     .foregroundColor(.white)
                 
                 VStack {
+                        
+                    Image("shield-check 1").resizable()
+                        .frame(width: 100, height: 100)
+                        .padding(.bottom, 30)
+    
+                    
                     Text("Login")
-                        .font(.largeTitle)
+                        .font(.title2)
                         .bold()
-                        .padding()
                         .foregroundStyle(.black)
                     
-                    TextField("Email", text: $username)
-                        .padding()
-                        .frame(width: 300, height: 50)
-                        .background(Color.black.opacity(0.1))
-                        .cornerRadius(10)
-                        .border(Color.red, width: CGFloat(wrongUsername))
-                        .textInputAutocapitalization(.never)
-                        .autocorrectionDisabled(true)
-                        .foregroundStyle(.black)
+                    HStack {
+                        TextField("Email", text: $username)
+                        
+                            .padding()
+                            .frame(width: 280, height: 50)
+                            .cornerRadius(45)
+                            .border(Color.red, width: CGFloat(wrongUsername))
+                            .textInputAutocapitalization(.never)
+                            .autocorrectionDisabled(true)
+                            Image(systemName: "envelope.fill").foregroundStyle(.black)
+                            
+                        }
+
+                    .background(RoundedRectangle(cornerRadius: 35).fill(.gray).opacity(0.2))
+                    .shadow(radius:2)
                     
-                    SecureField("Password", text: $password)
-                        .padding()
-                        .frame(width: 300, height: 50)
-                        .background(Color.black.opacity(0.1))
-                        .cornerRadius(10)
-                        .border(Color.red, width: CGFloat(wrongPassword))
+                    .padding()
+                    
+                    HStack {
+                        SecureField("Password", text: $password)
+                        
+                            .padding()
+                            .frame(width: 280, height: 50)
+                            .cornerRadius(45)
+                            .cornerRadius(10)
+                            .border(Color.red, width: CGFloat(wrongPassword))
+                            Image(systemName: "key.fill").foregroundStyle(.black)
+                    }
+
+                    .background(RoundedRectangle(cornerRadius: 35).fill(.gray).opacity(0.2))
+                    .shadow(radius:2)
+                    
                     
                     
                     Button(action: {
@@ -60,7 +81,8 @@ struct ContentView: View {
                             .frame(width: 200, height: 50)
                             .background(Color.main)
                             .cornerRadius(10)
-                            .shadow(radius: 2)
+                            .padding()
+                            
                     })
                     .padding()
                     
@@ -76,7 +98,11 @@ struct ContentView: View {
     }
 
     func authenticateUser(username: String, password: String) {
+<<<<<<< HEAD
+        if username.lowercased() == "grover@vt.edu" || username.lowercased() == "madhu@vt.edu" || username.lowercased() == "choudhary@vt.edu"{
+=======
         if username.lowercased() == "grover@vt.edu" || username.lowercased() == "rushil@vt.edu" || username.lowercased() == "advay@vt.edu"{
+>>>>>>> ac01d464d2ccd91d0bbb79b34438f5c5e49925ef
             wrongUsername = 0
             if password.lowercased() == "rest" {
                 wrongPassword = 0

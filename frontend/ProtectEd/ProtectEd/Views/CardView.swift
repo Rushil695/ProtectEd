@@ -7,6 +7,7 @@
 
 import SwiftUI
 import MapKit
+import Foundation
 
 struct CardView: View {
     @Binding var detection : String
@@ -18,6 +19,20 @@ struct CardView: View {
         if detection == ""  {
             GeometryReader { proxy in
                 VStack {
+<<<<<<< HEAD
+                    Text(" YOU ARE SAFE")
+                        .font(.title)
+                        .padding(.top, 17.0)
+                        .foregroundStyle(.white)
+                        .lineLimit(1)
+                        .bold()
+                    RoundedRectangle(cornerRadius: 25.0)
+                        .frame(width: 380, height:3)
+                        .lineLimit(1)
+                        .padding(.bottom, 20)
+                        .foregroundStyle(.white)
+                    
+=======
                     Button(action: {
                         audiovm.start()
                     }, label: {
@@ -32,6 +47,7 @@ struct CardView: View {
                     RoundedRectangle(cornerRadius: 25.0)
                         .frame(width: 380, height:3)
                         .lineLimit(1)
+>>>>>>> ac01d464d2ccd91d0bbb79b34438f5c5e49925ef
                         .foregroundStyle(.white)
                     HStack {
                         
@@ -45,35 +61,34 @@ struct CardView: View {
                                 .resizable()
                         }
                         .frame(width: 90, height: 90)
-                        .padding(.leading, -3.0)
-                        .padding(.bottom, 50.0)
-                        .padding()
+                        .padding(.bottom, 50)
+                        
                         VStack {
                             Text("Current Room : ")
                                 .foregroundStyle(.white)
                                 .lineLimit(1)
-                                .font(.title)
+                                .font(.title2)
                                 .bold()
                                 .padding(.top, -45.0)
                                 .padding(.bottom, 34.0)
                             Text(room)
                                 .foregroundStyle(.white)
                                 .lineLimit(1)
-                                .font(.title)
+                                .font(.title2)
                                 .padding(.top, -45.0)
                         }
                     }
                     HStack {
-                        Text("Next Class: " + room)
-                            .font(.custom("Extra", size: 24))
-                            .foregroundStyle(.main)
-                            .padding()
+                        Text("Your next class: " + room)
+                            .font(.custom("Extra", size: 20))
+                            .foregroundStyle(.white)
+                            .padding(.leading, 50)
+                            .bold()
 
                         Image(systemName: "arrow.forward").foregroundStyle(.main)
                             .imageScale(.medium).padding(.trailing)
                         
                     }
-                    .background(RoundedRectangle(cornerRadius: 30)).foregroundStyle(.white)
                     
                     .padding([.leading, .bottom, .trailing])
                     .padding(.top, -57.0)
@@ -87,8 +102,8 @@ struct CardView: View {
         {
             GeometryReader { proxy in
                 VStack {
-                    Text("DANGER!!!!")
-                        .font(.largeTitle)
+                    Text("DANGER: WEAPON DETECTED")
+                        .font(.title)
                         .padding(.top, 17.0)
                         .foregroundStyle(.white)
                         .lineLimit(1)
@@ -96,7 +111,7 @@ struct CardView: View {
                     RoundedRectangle(cornerRadius: 25.0)
                         .frame(width: 380, height:3)
                         .lineLimit(1)
-                    
+                        .padding(.bottom, 50)
                         .foregroundStyle(.white)
                     HStack {
                         
@@ -108,36 +123,37 @@ struct CardView: View {
                         // Goodwin: 37.232537, 80.425654
                         // New classrom: 37.229204, 80.426814
                         {
-                            Image("exit1")
-                                .resizable()
+                            Image("exit1").resizable()
+                                
                         }
-                        .background(RoundedRectangle(cornerRadius: 20))
-                        .frame(width: 130, height: 90)
-                        .padding(.leading, -3.0)
-                        .padding(.bottom, 50.0)
+                        .frame(width: 90, height: 90)
+
                         .padding()
+                        
                         VStack {
-                            Text("Head to Exit: 1")
+                            Text("Follow map to nearest exit")
                                 .foregroundStyle(.white)
-                                .lineLimit(1)
+                                .lineLimit(2)
                                 .font(.title2)
                                 .bold()
-                                .padding(.top, -45.0)
-                                .padding(.bottom, 34.0)
-                            Text("")
-                                .foregroundStyle(.white)
-                                .lineLimit(1)
-                                .font(.title)
-                                .padding(.top, -45.0)
+                                .padding(.top, 5)
+                                .padding(.bottom, 10)
+                            
+                            let status = ShooterStatus(room_number: "101", event_time: "12:03:45", incident_source: "Sensor", message: "All clear")
+                            HStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/, content: {
+                                
+                                Text("Audio detected at:")
+                                    .font(.title3)
+                                    
+                                    .foregroundStyle(.white)
+                                
+                                Text(status.event_time.prefix(5))
+                                    .font(.title3)
+                                    .foregroundStyle(.white)
+                                   
+                            })
                         }
                     }
-                    HStack {
-                        Text("Detected through \(detection)")
-                            .font(.custom("Extra", size: 23))
-                            .foregroundStyle(.red)
-                            .padding()
-                    }
-                    .background(RoundedRectangle(cornerRadius: 30)).foregroundStyle(.white)
                     
                     .padding([.leading, .bottom, .trailing])
                     .padding(.top, -57.0)
