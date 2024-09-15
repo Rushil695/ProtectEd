@@ -93,7 +93,7 @@ class MapVM: ObservableObject {
         guard let response = response as? HTTPURLResponse, response.statusCode == 200 else {
             throw GHError.invalidResponse
         }
-        print(data)
+        print(response)
         do {
             let decoder = JSONDecoder()
             return try decoder.decode(ShooterStatus.self, from: data)
@@ -104,7 +104,7 @@ class MapVM: ObservableObject {
     
     //sends the post requests every second
     func startPolling() {
-        timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
+        timer = Timer.scheduledTimer(withTimeInterval: 3.0, repeats: true) { _ in
             Task {
                 do {
                     let shooterStatus = try await self.sendGetRequest1second()
