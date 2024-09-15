@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 app = FastAPI()
 
 # Connect to the SQLite database
-conn = sqlite3.connect("example.db", check_same_thread=False)
+conn = sqlite3.connect("../example.db", check_same_thread=False)
 cursor = conn.cursor()
 
 # Create tables for video and audio incidents
@@ -42,7 +42,7 @@ async def log_video_incident(incident: IncidentLog):
         return {
             "message": f"Video incident logged for room {incident.room_number} at {incident.event_time}"
         }
-    except Exception as e:
+    except sqlite3.Error as e:
         return {"error": str(e)}
 
 
@@ -79,12 +79,15 @@ async def report_event():
             current_time = datetime.now()
 
             # Check if the incident is older than 10 seconds
-            if current_time - event_time_obj > timedelta(seconds=10):
+            if current_time - event_time_obj > timedelta(seconds=60):
                 # If older than 10 seconds, delete the log and skip it
                 cursor.execute("DELETE FROM incident_log WHERE rowid = ?", (rowid,))
                 conn.commit()
                 return {
-                    "message": "Incident older than 10 seconds, ignored and deleted"
+                    "room_number": "",
+                    "event_time": "",
+                    "incident_source": "",
+                    "message": "Incident older than 60 seconds, ignored and deleted",
                 }
 
             # Otherwise, delete the log and return it
@@ -97,7 +100,12 @@ async def report_event():
                 "message": "Incident reported and deleted",
             }
         else:
-            return {"message": "No incidents available"}
+            return {
+                "room_number": "",
+                "event_time": "",
+                "incident_source": "",
+                "message": "No incidents available",
+            }
 
     except Exception as e:
         return {"error": str(e)}
