@@ -74,9 +74,6 @@ struct MapView: View {
                             Image("exit")
                                 .resizable()
                                 .frame(width: 30, height: 30)
-                        
-                                .foregroundStyle(.white)
-                                .background(.red)
                         }
                     }
                     if let userLocation = mapvm.locationManager.location.coordinate {
