@@ -9,7 +9,7 @@ class MapVM: ObservableObject {
     @Published var timer: Timer?
     @Published var shooterdetection = ""
     var locationManager = LocationManager()
-    var ngronk = "https://bb45-2607-b400-26-0-8477-7abe-92b7-b1dd.ngrok-free.app"
+    var ngronk = "https://5ddb-2607-b400-26-0-8477-7abe-92b7-b1dd.ngrok-free.app"
     
     
     
@@ -31,7 +31,7 @@ class MapVM: ObservableObject {
             CLLocationCoordinate2D(latitude: 37.23173, longitude: -80.42743)],
             detected: false)
     ]
-    
+    //put the closest exits first
     @Published var exits: [Exits] = [
         Exits(name: "Main", coordinates:
             CLLocationCoordinate2D(latitude: 37.23160, longitude: -80.42738),
@@ -48,7 +48,10 @@ class MapVM: ObservableObject {
     @Published var perpetratorLocation: CLLocationCoordinate2D?
     
     //put the user location adn regularpoints and exits
-    @Published var shortestPath: [CLLocationCoordinate2D] = [CLLocationCoordinate2D(latitude: 37.23190, longitude: -80.42745), CLLocationCoordinate2D(latitude: 37.23190, longitude: -80.42745), ]
+    @Published var shortestPath: [CLLocationCoordinate2D] = []
+    
+    
+    
     
     // Dijkstra's Algorithm with avoidance
     func dijkstra(source: Node, destination: Node, graph: [Node], perpetratorLocation: CLLocationCoordinate2D, avoidanceRadius: Double) -> [Node]? {
@@ -116,7 +119,15 @@ class MapVM: ObservableObject {
         return path
     }
     
-    // setupGraph 
+    func addpoints() {
+        DispatchQueue.main.async {
+            self.shortestPath.append(contentsOf: [ self.rooms.first!.centerCoordinate,
+                    CLLocationCoordinate2D(latitude: 37.23190, longitude: -80.42745),
+                    CLLocationCoordinate2D(latitude: 37.23190, longitude: -80.42690),
+                                                   self.exits.first!.coordinates])
+            }
+    }
+    // setupGraph
     
     // Check both user and perpetrator locations before calculating the path
     func checkAndCalculatePath() {

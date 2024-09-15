@@ -4,12 +4,15 @@ import MapKit
 struct MapView: View {
     var timetable: Timetable
     @StateObject var mapvm = MapVM()
-    @State private var position: MapCameraPosition = .camera(
-        .init(centerCoordinate: CLLocationCoordinate2D(latitude: 37.23125, longitude: -80.42744), distance: 380))
-    @StateObject var audiovm = AudioClassifier()
-
+   // @State private var position: MapCameraPosition = .camera(.init(centerCoordinate: CLLocationCoordinate2D(latitude: 37.23125, longitude: -80.42744), distance: 380))
     
-    // Function to calculate and draw the shortest path
+    // GOodwin: @State private var position: MapCameraPosition = .camera(.init(centerCoordinate: CLLocationCoordinate2D(latitude: 37.232537, -80.425654), distance 380
+    
+    @State private var position: MapCameraPosition = .camera(.init(centerCoordinate: CLLocationCoordinate2D(latitude: 37.2291, longitude: -80.42699), distance: 300))
+    
+    @StateObject var audiovm = AudioClassifier()
+    
+  
    
     
     func getCurrentClass() -> Class? {
@@ -76,19 +79,11 @@ struct MapView: View {
                         }
                     }
                     
-                    ForEach(mapvm.regularPoints) { point in
-                        Annotation("",coordinate: point.coordinate, content: {
-                         Circle()
-                         .stroke(Color.blue, lineWidth: 2)
-                         .frame(width: 10, height: 10)
-                         })
-                         
-                    }
                     
                     // Draw the shortest path
                     if !mapvm.shortestPath.isEmpty {
                         MapPolyline(coordinates: mapvm.shortestPath)
-                            .stroke(Color.blue, lineWidth: 3)
+                            .stroke(Color.blue, lineWidth: 4)
                     }
                 
                     if let userLocation = mapvm.locationManager.location.coordinate {
@@ -103,14 +98,14 @@ struct MapView: View {
                     VStack {
                         Spacer()
                         
-                        CardView(detection: $mapvm.shooterdetection, position: $position, room: .constant(currentClass.room.name))
+                        CardView(detection: $mapvm.shooterdetection, position: $position, room: .constant(currentClass.room.name), time: $mapvm.shooter.event_time)
                             .environmentObject(audiovm)
                             .opacity(0.9)
                     }
                 } else {
                     VStack {
                         Spacer()
-                        CardView(detection: $mapvm.shooterdetection, position: $position, room: .constant("No Class"))
+                        CardView(detection: $mapvm.shooterdetection, position: $position, room: .constant("No Class"), time: $mapvm.shooter.event_time)
                             .environmentObject(audiovm)
                             .opacity(0.9)
                     }
@@ -123,7 +118,7 @@ struct MapView: View {
                 mapvm.stopPolling()
             }
             .onChange(of: audiovm.detectedSound) {
-                if audiovm.detectedSound == "Guns" && audiovm.confidence > 0.8 {
+                if audiovm.detectedSound == "Guns" && audiovm.confidence > 0.5 {
                     mapvm.stopPolling()
                     mapvm.shooterdetection = "Audio"
                     
@@ -135,7 +130,9 @@ struct MapView: View {
                 }
                 mapvm.setPerpetratorLocation(to: getCurrentClass()?.room.centerCoordinate ??             CLLocationCoordinate2D(latitude: 37.23193, longitude: -80.42738))
                 mapvm.checkAndCalculatePath()
+                mapvm.addpoints()
             }
+        
         }.navigationBarBackButtonHidden()
     }
 }

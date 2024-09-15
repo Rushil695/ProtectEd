@@ -1,10 +1,3 @@
-//
-//  TestView.swift
-//  prtkt
-//
-//  Created by Rushil Madhu on 9/13/24.
-//
-
 import SwiftUI
 import MapKit
 import Foundation
@@ -14,30 +7,17 @@ struct CardView: View {
     @EnvironmentObject var audiovm : AudioClassifier
     @Binding var position : MapCameraPosition
     @Binding var room: String
+    @Binding var time: String
     
     var body: some View {
         if detection == ""  {
             GeometryReader { proxy in
                 VStack {
-<<<<<<< HEAD
-                    Text(" YOU ARE SAFE")
-                        .font(.title)
-                        .padding(.top, 17.0)
-                        .foregroundStyle(.white)
-                        .lineLimit(1)
-                        .bold()
-                    RoundedRectangle(cornerRadius: 25.0)
-                        .frame(width: 380, height:3)
-                        .lineLimit(1)
-                        .padding(.bottom, 20)
-                        .foregroundStyle(.white)
-                    
-=======
                     Button(action: {
                         audiovm.start()
                     }, label: {
-                        Text("SAFE")
-                            .font(.largeTitle)
+                        Text("YOU ARE SAFE")
+                            .font(.title)
                             .padding(.top, 17.0)
                             .foregroundStyle(.white)
                             .lineLimit(1)
@@ -45,23 +25,30 @@ struct CardView: View {
                         
                     })
                     RoundedRectangle(cornerRadius: 25.0)
-                        .frame(width: 380, height:3)
+                        .frame(width: 380, height: 3)
                         .lineLimit(1)
->>>>>>> ac01d464d2ccd91d0bbb79b34438f5c5e49925ef
+                        .padding(.bottom, 20)
                         .foregroundStyle(.white)
+
                     HStack {
                         
                         Button(action: {
                             withAnimation {
+                                // Goodwin: 37.232537, 80.425654
+                                // New classrom: 37.229204, 80.426814
                                 position = .camera(
-                                    .init(centerCoordinate: CLLocationCoordinate2D(latitude: 37.23125, longitude: -80.42744), distance: 380)
-                                )}})
-                        {
+                                    .init(centerCoordinate: CLLocationCoordinate2D(latitude: 37.2291, longitude: -80.42699), distance: 380)
+                                )
+                            // Goodwin:   position =.camera(.init(centerCoordinate: CLLocationCoordinate2D(latitude: 37.232537, longitude: -80.425654), distance: 380))
+                                
+                            // NEw classroom :   position =.camera(.init(centerCoordinate: CLLocationCoordinate2D(latitude: 37.229204, longitude: -80.426814), distance: 380))
+                            }
+                        }) {
                             Image("location")
                                 .resizable()
+                                .frame(width: 90, height: 90)
                         }
-                        .frame(width: 90, height: 90)
-                        .padding(.bottom, 50)
+                        .padding([.bottom, .trailing], 50)
                         
                         VStack {
                             Text("Current Room : ")
@@ -83,81 +70,75 @@ struct CardView: View {
                             .font(.custom("Extra", size: 20))
                             .foregroundStyle(.white)
                             .padding(.leading, 50)
+                            .padding(.top)
                             .bold()
-
-                        Image(systemName: "arrow.forward").foregroundStyle(.main)
-                            .imageScale(.medium).padding(.trailing)
+                        Button(action: {}, label: {
+                            Image(systemName: "arrow.forward").foregroundStyle(.main)
+                                .imageScale(.medium).padding(.trailing)
+                        })
                         
                     }
-                    
                     .padding([.leading, .bottom, .trailing])
                     .padding(.top, -57.0)
-                    
                 }
                 .background(RoundedRectangle(cornerRadius: 30)).foregroundStyle(.main)
                 .frame(width: proxy.size.width, height: proxy.size.height / 0.6)
             }
-        }
-        else
-        {
+        } else {
             GeometryReader { proxy in
                 VStack {
-                    Text("DANGER: WEAPON DETECTED")
+                    Text("DANGER:")
                         .font(.title)
                         .padding(.top, 17.0)
                         .foregroundStyle(.white)
-                        .lineLimit(1)
+                        .lineLimit(2)
+                        .bold()
+                    Text("WEAPON DETECTED")
+                        .foregroundStyle(.white)
+                        .font(.title2)
+                        .lineLimit(2)
                         .bold()
                     RoundedRectangle(cornerRadius: 25.0)
-                        .frame(width: 380, height:3)
+                        .frame(width: 380, height: 3)
                         .lineLimit(1)
                         .padding(.bottom, 50)
                         .foregroundStyle(.white)
                     HStack {
-                        
                         Button(action: {
                             withAnimation {
                                 position = .camera(
                                     .init(centerCoordinate: CLLocationCoordinate2D(latitude: 37.23125, longitude: -80.42744), distance: 380)
-                                )}})
-                        // Goodwin: 37.232537, 80.425654
-                        // New classrom: 37.229204, 80.426814
-                        {
+                                )
+                            }
+                        }) {
                             Image("exit1").resizable()
-                                
+                                .frame(width: 120, height: 80)
                         }
-                        .frame(width: 90, height: 90)
-
                         .padding()
-                        
+
                         VStack {
-                            Text("Follow map to nearest exit")
+                            Text("Follow map to exit")
                                 .foregroundStyle(.white)
-                                .lineLimit(2)
+                                .lineLimit(1)
                                 .font(.title2)
                                 .bold()
                                 .padding(.top, 5)
                                 .padding(.bottom, 10)
                             
-                            let status = ShooterStatus(room_number: "101", event_time: "12:03:45", incident_source: "Sensor", message: "All clear")
-                            HStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/, content: {
-                                
-                                Text("Audio detected at:")
-                                    .font(.title3)
-                                    
+                            HStack {
+                                Text("Source:  \(detection)")
+                                    .font(.title2)
                                     .foregroundStyle(.white)
+                                    .bold()
                                 
-                                Text(status.event_time.prefix(5))
-                                    .font(.title3)
-                                    .foregroundStyle(.white)
-                                   
-                            })
+                            }
+                            Text("Time: " + time)
+                                .font(.title3)
+                                .foregroundStyle(.white)
                         }
                     }
-                    
                     .padding([.leading, .bottom, .trailing])
                     .padding(.top, -57.0)
-                    
                 }
                 .background(RoundedRectangle(cornerRadius: 30)).foregroundStyle(.red)
                 .frame(width: proxy.size.width, height: proxy.size.height / 0.6)
@@ -167,7 +148,6 @@ struct CardView: View {
 }
 
 #Preview {
-    CardView(detection: .constant(""), position: .constant(.camera(
-        .init(centerCoordinate: CLLocationCoordinate2D(latitude: 37.23125, longitude: -80.42744), distance: 380))),room: .constant("CMSC216") )
+    CardView(detection: .constant("audio"), position: .constant(.camera(
+        .init(centerCoordinate: CLLocationCoordinate2D(latitude: 37.23125, longitude: -80.42744), distance: 380))), room: .constant("CMSC216"), time:.constant("HH:MM:ss"))
 }
-
