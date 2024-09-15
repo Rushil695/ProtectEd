@@ -71,7 +71,7 @@ struct ContentView: View {
             .navigationBarHidden(true)
             .navigationDestination(isPresented: $showingLoginScreen) {
                 ScheduleView()
-        }
+            }
         }
     }
 

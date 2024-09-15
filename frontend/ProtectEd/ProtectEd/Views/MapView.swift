@@ -86,13 +86,14 @@ struct MapView: View {
                 if let currentClass = getCurrentClass() {
                     VStack {
                         Spacer()
-                        CardView(detection: $mapvm.shooter.detected, position: $position, room: .constant(currentClass.room.name))
+                        
+                        CardView(detection: $mapvm.shooterdetection, position: $position, room: .constant(currentClass.room.name))
                             .opacity(0.9)
                     }
                 } else {
                     VStack {
                         Spacer()
-                        CardView(detection: $mapvm.shooter.detected, position: $position, room: .constant("No Class"))
+                        CardView(detection: $mapvm.shooterdetection, position: $position, room: .constant("No Class"))
                             .opacity(0.9)
                     }
                 }
@@ -104,8 +105,12 @@ struct MapView: View {
                 mapvm.stopPolling()
             }
             .onChange(of: audiovm.detectedSound) {
-                if audiovm.detectedSound == "Gunshot" && audiovm.confidence > 0.7 {
-                    mapvm.shooter.detected = true
+                if audiovm.detectedSound == "Guns" && audiovm.confidence > 0.85 {
+                    mapvm.shooterdetection = "Audio"
+                    mapvm.stopPolling()
+                    audiovm.stopListening()
+                    Task {
+                        await mapvm.shooterDetected(roomnumber: getCurrentClass()?.room.name ?? "DND101")}
                 }
             }
         }.navigationBarBackButtonHidden()

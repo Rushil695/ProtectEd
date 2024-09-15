@@ -34,6 +34,8 @@ enum GHError: Error {
 }
 
 struct ShooterStatus: Codable {
-    var room: String
-    var detected: Bool
+    var room_number: String
+    var event_time: String
+    var incident_source: String
+    var message: String
 }
