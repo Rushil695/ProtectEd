@@ -68,7 +68,7 @@ async def report_event():
     try:
         # Fetch the oldest incident from the database
         cursor.execute(
-            "SELECT rowid, room_number, event_time, incident_source FROM incident_log ORDER BY event_time ASC LIMIT 1"
+            "SELECT rowid, room_number, event_time, incident_source FROM incident_log ORDER BY event_time DESC LIMIT 1"
         )
         result = cursor.fetchone()
 
@@ -77,18 +77,20 @@ async def report_event():
             # Convert event_time string to a datetime object
             event_time_obj = datetime.strptime(event_time, "%H:%M:%S")
             current_time = datetime.now()
+            print(f"Current time: {current_time}")
+            print(f"Event time: {event_time_obj}")
 
-            # Check if the incident is older than 10 seconds
-            if current_time - event_time_obj > timedelta(seconds=60):
-                # If older than 10 seconds, delete the log and skip it
-                cursor.execute("DELETE FROM incident_log WHERE rowid = ?", (rowid,))
-                conn.commit()
-                return {
-                    "room_number": "",
-                    "event_time": "",
-                    "incident_source": "",
-                    "message": "Incident older than 60 seconds, ignored and deleted",
-                }
+            # # Check if the incident is older than 180 seconds
+            # if current_time - event_time_obj > timedelta(seconds=180):
+            #     # If older than 180 seconds, delete the log and skip it
+            #     cursor.execute("DELETE FROM incident_log WHERE rowid = ?", (rowid,))
+            #     conn.commit()
+            #     return {
+            #         "room_number": "",
+            #         "event_time": "",
+            #         "incident_source": "",
+            #         "message": "Incident older than 180 seconds, ignored and deleted",
+            #     }
 
             # Otherwise, delete the log and return it
             cursor.execute("DELETE FROM incident_log WHERE rowid = ?", (rowid,))
