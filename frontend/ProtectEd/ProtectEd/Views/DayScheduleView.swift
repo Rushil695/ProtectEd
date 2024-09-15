@@ -19,23 +19,32 @@ struct DayScheduleView: View {
            
             HStack {
     
+                
                 Text(dayName)
                     .font(.headline)
-                    .frame(width: 100, height: 35)
-                    .background(Color.white.opacity(0.5))
-                    .padding()
+                    .frame(width: 300, height: 35)
+                    .background(Color.white.opacity(0.8))
+                    .cornerRadius(15)
                     .foregroundColor(.black)
+                    .padding(.leading, 30)
+                    .padding(.bottom, 10)
 
-                Button(action: {
+               Button(action: {
                     classes.append(Class(name: "", startTime: Date(), endTime: Date(), room: defaultRoom))
                     
-                }) {
+               }){
                     Image(systemName: "plus.circle.fill")
+                        
                         .resizable()
                         .frame(width: 25, height: 25)
                         .cornerRadius(15)
-                        .foregroundColor(Color.main.opacity(0.8))
-                }
+                    
+                    }
+               
+                .background(.white)
+                .shadow(radius:2)
+                .frame(width: 25, height: 25)
+                .cornerRadius(15)
                
             }
 
@@ -43,12 +52,17 @@ struct DayScheduleView: View {
                 HStack {
                     
                     TextField("Class Name", text: $classItem.name)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .frame(width: 150)
+                        .padding()
+                        .frame(width: 130, height: 35)
+                        .background(Color.gray.opacity(0.4))
+                        .foregroundColor(.black)
+                        .cornerRadius(10)
                     
                     TextField("Room", text: $classItem.room.name)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .frame(width: 80)
+                        .frame(width: 100, height: 35)
+                        .background(Color.gray.opacity(0.4))
+                        .foregroundColor(.black)
+                        .cornerRadius(10)
                
                     DatePicker("", selection: $classItem.startTime, displayedComponents: .hourAndMinute)
                         .labelsHidden()
@@ -57,6 +71,7 @@ struct DayScheduleView: View {
                     Button(action: {
                         if let index = classes.firstIndex(where: { $0.id == classItem.id }) {
                             classes.remove(at: index)
+                            
                         }
                     
                     }) {

@@ -18,18 +18,15 @@ struct ScheduleView: View {
                         .scale(1.4)
                         .foregroundColor(.white.opacity(0.2))
                     
-                    
                         
                     VStack(alignment: .center) {
                         Text("Enter Your Schedule")
-                            .frame(width: 300, height: 40)
-                            .font(.system(size: 32))
-                            .fontWeight(.medium)
-                            .shadow(radius: 5)
-                            .foregroundColor(.black)
+                            .frame(width: 400, height: 40)
+                            .font(.largeTitle)
+                            .foregroundColor(.white)
                             .bold()
-                            .padding(.top, 45)
-                            .padding(.bottom, 35)
+                            .padding(.top, 50)
+                            .padding(.bottom, 80)
                         
                         ScrollView {
                             ForEach(Weekday.allCases) { day in
@@ -46,17 +43,17 @@ struct ScheduleView: View {
                             .padding(.top, 50)
                         }
     
-                        .padding(.bottom, 40)
+                        .padding(.bottom, 10)
                         NavigationLink(destination: MapView(timetable: timetable)) {
                             Text("Go to Map")
                                 .font(.headline)
-                                .frame(width: 100 , height: 30)
-                                .background(Color.main)
+                                .frame(width: 200 , height: 60)
+                                .background(Color(red: 0.0, green: 0.6, blue: 0.0))
                                 .foregroundColor(.white)
                                 .cornerRadius(10)
                             
                         }.navigationBarBackButtonHidden()
-                        .padding(.bottom, 50)
+                        .padding(.bottom, 40)
                     
                     }
                     

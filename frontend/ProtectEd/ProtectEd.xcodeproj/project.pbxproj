@@ -23,7 +23,6 @@
 		CE06016D2C96348700F37603 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CE06015D2C96348700F37603 /* Assets.xcassets */; };
 		CE06016E2C96348700F37603 /* Gunshot.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = CE06015E2C96348700F37603 /* Gunshot.mlmodel */; };
 		CE0601702C96348700F37603 /* ProtectEdApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE0601602C96348700F37603 /* ProtectEdApp.swift */; };
-		CE0601732C96537D00F37603 /* RealertSoundClassifier.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = CE0601722C96537D00F37603 /* RealertSoundClassifier.mlmodel */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -64,7 +63,6 @@
 		CE06015E2C96348700F37603 /* Gunshot.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = Gunshot.mlmodel; sourceTree = "<group>"; };
 		CE06015F2C96348700F37603 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CE0601602C96348700F37603 /* ProtectEdApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProtectEdApp.swift; sourceTree = "<group>"; };
-		CE0601722C96537D00F37603 /* RealertSoundClassifier.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; name = RealertSoundClassifier.mlmodel; path = ../../../../../../Downloads/RealertSoundClassifier.mlmodel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -143,7 +141,6 @@
 			isa = PBXGroup;
 			children = (
 				CE0601532C96348700F37603 /* Preview Assets.xcassets */,
-				CE0601722C96537D00F37603 /* RealertSoundClassifier.mlmodel */,
 			);
 			path = "Preview Content";
 			sourceTree = "<group>";
@@ -316,7 +313,6 @@
 				CE06016A2C96348700F37603 /* DayScheduleView.swift in Sources */,
 				CE06016E2C96348700F37603 /* Gunshot.mlmodel in Sources */,
 				CE06016B2C96348700F37603 /* MapView.swift in Sources */,
-				CE0601732C96537D00F37603 /* RealertSoundClassifier.mlmodel in Sources */,
 				CE0601632C96348700F37603 /* AudioClassifier.swift in Sources */,
 				CE0601642C96348700F37603 /* Models.swift in Sources */,
 				CE0601702C96348700F37603 /* ProtectEdApp.swift in Sources */,
