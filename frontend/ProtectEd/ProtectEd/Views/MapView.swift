@@ -105,9 +105,10 @@ struct MapView: View {
                 mapvm.stopPolling()
             }
             .onChange(of: audiovm.detectedSound) {
-                if audiovm.detectedSound == "Guns" && audiovm.confidence > 0.85 {
-                    mapvm.shooterdetection = "Audio"
+                if audiovm.detectedSound == "Guns" && audiovm.confidence > 0.8 {
                     mapvm.stopPolling()
+                    mapvm.shooterdetection = "Audio"
+                    
                     audiovm.stopListening()
                     Task {
                         await mapvm.shooterDetected(roomnumber: getCurrentClass()?.room.name ?? "DND101")}
