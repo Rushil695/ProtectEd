@@ -9,13 +9,13 @@ import SwiftUI
 import MapKit
 
 struct CardView: View {
-    @Binding var detection : Bool
+    @Binding var detection : String
     
     @Binding var position : MapCameraPosition
     @Binding var room: String
     
     var body: some View {
-        if !detection  {
+        if detection == ""  {
             GeometryReader { proxy in
                 VStack {
                     Text("SAFE")
@@ -102,22 +102,23 @@ struct CardView: View {
                                     .init(centerCoordinate: CLLocationCoordinate2D(latitude: 37.23125, longitude: -80.42744), distance: 380)
                                 )}})
                         {
-                            Image("location")
+                            Image("exit1")
                                 .resizable()
                         }
-                        .frame(width: 90, height: 90)
+                        .background(RoundedRectangle(cornerRadius: 20))
+                        .frame(width: 130, height: 90)
                         .padding(.leading, -3.0)
                         .padding(.bottom, 50.0)
                         .padding()
                         VStack {
-                            Text("Head to Exit: ")
+                            Text("Head to Exit: 1")
                                 .foregroundStyle(.white)
                                 .lineLimit(1)
-                                .font(.title)
+                                .font(.title2)
                                 .bold()
                                 .padding(.top, -45.0)
                                 .padding(.bottom, 34.0)
-                            Text("1")
+                            Text("")
                                 .foregroundStyle(.white)
                                 .lineLimit(1)
                                 .font(.title)
@@ -125,12 +126,10 @@ struct CardView: View {
                         }
                     }
                     HStack {
-                        Text("Evacuate Immediately")
-                            .font(.custom("Extra", size: 24))
+                        Text("Detected through \(detection)")
+                            .font(.custom("Extra", size: 23))
                             .foregroundStyle(.red)
                             .padding()
-                        Image(systemName: "arrow.forward").foregroundStyle(.red)
-                            .imageScale(.medium).padding(.trailing)
                     }
                     .background(RoundedRectangle(cornerRadius: 30)).foregroundStyle(.white)
                     
@@ -146,55 +145,7 @@ struct CardView: View {
 }
 
 #Preview {
-    CardView(detection: .constant(true), position: .constant(.camera(
+    CardView(detection: .constant("Audio"), position: .constant(.camera(
         .init(centerCoordinate: CLLocationCoordinate2D(latitude: 37.23125, longitude: -80.42744), distance: 380))),room: .constant("CMSC216") )
 }
-
-
-//                    ZStack {
-//                        RoundedRectangle(cornerRadius: 40)
-//                            .opacity(1.0)
-//                            .padding([.top, .leading, .trailing])
-//                            .padding()
-//                            .frame(width: 250, height: 120)
-//                            .foregroundStyle(Color.main.opacity(0))
-//                        RoundedRectangle(cornerRadius: 40)
-//                            .opacity(1.0)
-//                            .padding([.top, .leading, .trailing])
-//                            .padding()
-//                            .frame(width: 450, height: 310)
-//                            .foregroundStyle(Color.main)
-//
-//                        VStack {
-//                            HStack {
-//                                Button(action: {
-//                                    withAnimation {
-//                                        position = .camera(
-//                                            .init(centerCoordinate: CLLocationCoordinate2D(latitude: 37.23125, longitude: -80.42744), distance: 380)
-//                                        )}})
-//                                {
-//                                    Image(systemName: "location.circle.fill")
-//                                        .font(.title)
-//                                }
-//                                .frame(width: 100, height: 100)
-//                                .padding(.leading, 26.0)
-//                                .padding(.bottom, 50.0)
-//
-//                                Text("Currently in Room: ")
-//                                    .font(.custom("TYPOGRAPH PRO Light", size: 20))
-//                                    .bold()
-//                                    .foregroundStyle(.white)
-//                                    .padding()
-//                                Spacer()
-//                            }
-//
-//                            Text("Clear of Danger")
-//                                .font(.custom("TYPOGRAPH PRO Light", size: 34))
-//                                .foregroundStyle(.white)
-//                                .padding(.bottom, 13.0)
-//                            Text("Detecting through Audio and Video")
-//                                .font(.custom("TYPOGRAPH PRO Light", size: 20))
-//                                .foregroundStyle(.white)
-//                        }
-//                    }
 

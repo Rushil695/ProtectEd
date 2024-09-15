@@ -97,7 +97,8 @@ async def report_event():
                 "message": "Incident reported and deleted",
             }
         else:
-            return {"message": "No incidents available"}
+            return {
+                "message": "No incidents available"}
 
     except Exception as e:
         return {"error": str(e)}
