@@ -7,12 +7,15 @@ struct MapView: View {
     @State private var position: MapCameraPosition = .camera(
         .init(centerCoordinate: CLLocationCoordinate2D(latitude: 37.23125, longitude: -80.42744), distance: 380))
     @StateObject var audiovm = AudioClassifier()
+
+    
+    // Function to calculate and draw the shortest path
+   
     
     func getCurrentClass() -> Class? {
         let currentWeekday: Weekday = .monday // Forcing it to Monday for testing purposes
 
         guard let classesToday = timetable.schedule[currentWeekday] else {
-            print("No classes found for \(currentWeekday)")
             return nil
         }
 
@@ -35,7 +38,6 @@ struct MapView: View {
             // If this is the last class of the day, treat it as spanning to the end of the day
             if index == classesToday.count - 1 {
                 if nowTotalMinutes >= startTotalMinutes {
-                    print("Current class found: \(currentClass.name)")
                     return currentClass
                 }
             } else {
@@ -48,13 +50,10 @@ struct MapView: View {
                 let nextStartTotalMinutes = nextStartHour * 60 + nextStartMinute
 
                 if nowTotalMinutes >= startTotalMinutes && nowTotalMinutes < nextStartTotalMinutes {
-                    print("Current class found: \(currentClass.name)")
                     return currentClass
                 }
             }
         }
-        
-        print("No current class matches the current time")
         return nil
     }
     
@@ -76,6 +75,22 @@ struct MapView: View {
                                 .frame(width: 30, height: 30)
                         }
                     }
+                    
+                    ForEach(mapvm.regularPoints) { point in
+                        Annotation("",coordinate: point.coordinate, content: {
+                         Circle()
+                         .stroke(Color.blue, lineWidth: 2)
+                         .frame(width: 10, height: 10)
+                         })
+                         
+                    }
+                    
+                    // Draw the shortest path
+                    if !mapvm.shortestPath.isEmpty {
+                        MapPolyline(coordinates: mapvm.shortestPath)
+                            .stroke(Color.blue, lineWidth: 3)
+                    }
+                
                     if let userLocation = mapvm.locationManager.location.coordinate {
                         Annotation("Your Location", coordinate: userLocation) {
                             Image(systemName: "location.north.fill")
@@ -115,7 +130,11 @@ struct MapView: View {
                     audiovm.stopListening()
                     Task {
                         await mapvm.shooterDetected(roomnumber: getCurrentClass()?.room.name ?? "x")}
+                    print(mapvm.shortestPath)
+                    
                 }
+                mapvm.setPerpetratorLocation(to: getCurrentClass()?.room.centerCoordinate ??             CLLocationCoordinate2D(latitude: 37.23193, longitude: -80.42738))
+                mapvm.checkAndCalculatePath()
             }
         }.navigationBarBackButtonHidden()
     }

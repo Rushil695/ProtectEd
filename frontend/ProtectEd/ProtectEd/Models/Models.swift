@@ -39,3 +39,13 @@ struct ShooterStatus: Codable {
     var incident_source: String
     var message: String
 }
+
+// RegularPoint.swift
+
+import Foundation
+import MapKit
+
+struct RegularPoint: Identifiable {
+    let id = UUID() // Unique identifier
+    let coordinate: CLLocationCoordinate2D
+}
