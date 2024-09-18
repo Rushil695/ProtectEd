@@ -58,7 +58,7 @@ cap = cv2.VideoCapture(0)
 frame_counter = 0
 processing_thread = None
 frame_skip = 5  # Skip frames for performance
-room_number = "DND101"  # Example room number
+room_number = "NCB270"  # Example room number
 
 try:
     while True:
