@@ -6,7 +6,7 @@ struct MapView: View {
     @StateObject var mapvm = MapVM()
    // @State private var position: MapCameraPosition = .camera(.init(centerCoordinate: CLLocationCoordinate2D(latitude: 37.23125, longitude: -80.42744), distance: 380))
     
-    // GOodwin: @State private var position: MapCameraPosition = .camera(.init(centerCoordinate: CLLocationCoordinate2D(latitude: 37.232537, -80.425654), distance 380
+//    @State private var position: MapCameraPosition = .camera(.init(centerCoordinate: CLLocationCoordinate2D(latitude: 37.2321, longitude: -80.4258), distance :380))
     
     @State private var position: MapCameraPosition = .camera(.init(centerCoordinate: CLLocationCoordinate2D(latitude: 37.2291, longitude: -80.42699), distance: 300))
     
@@ -100,6 +100,7 @@ struct MapView: View {
                         
                         CardView(detection: $mapvm.shooterdetection, position: $position, room: .constant(currentClass.room.name), time: $mapvm.shooter.event_time)
                             .environmentObject(audiovm)
+                            .environmentObject(mapvm)
                             .opacity(0.9)
                     }
                 } else {
@@ -125,13 +126,16 @@ struct MapView: View {
                     audiovm.stopListening()
                     Task {
                         await mapvm.shooterDetected(roomnumber: getCurrentClass()?.room.name ?? "x")}
+                    
                     print(mapvm.shortestPath)
                     
+                    
                 }
-                mapvm.setPerpetratorLocation(to: getCurrentClass()?.room.centerCoordinate ??             CLLocationCoordinate2D(latitude: 37.23193, longitude: -80.42738))
+                mapvm.rooms[0].detected = true
+                mapvm.setPerpetratorLocation(to: getCurrentClass()?.room.centerCoordinate ?? CLLocationCoordinate2D(latitude: 37.23193, longitude: -80.42738))
                 mapvm.checkAndCalculatePath()
-                mapvm.addpoints()
             }
+            
         
         }.navigationBarBackButtonHidden()
     }

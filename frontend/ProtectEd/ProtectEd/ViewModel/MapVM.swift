@@ -9,7 +9,7 @@ class MapVM: ObservableObject {
     @Published var timer: Timer?
     @Published var shooterdetection = ""
     var locationManager = LocationManager()
-    var ngronk = "https://5ddb-2607-b400-26-0-8477-7abe-92b7-b1dd.ngrok-free.app"
+    var ngronk = "https://c2fd-129-2-192-16.ngrok-free.app"
     
     
     
@@ -18,32 +18,50 @@ class MapVM: ObservableObject {
     @Published var userLocation = CLLocationCoordinate2D(latitude: 37.23186, longitude: 80.42737)
 
     @Published var rooms: [Rooms] = [
-        Rooms(name: "DND101", coordinates: [
-            CLLocationCoordinate2D(latitude: 37.23193, longitude: -80.42738),
-            CLLocationCoordinate2D(latitude: 37.23184, longitude: -80.42727),
-            CLLocationCoordinate2D(latitude: 37.23180, longitude: -80.42737),
-            CLLocationCoordinate2D(latitude: 37.23187, longitude: -80.42745)],
+        Rooms(name: "NCB270", coordinates: [
+            CLLocationCoordinate2D(latitude: 37.22931, longitude: -80.42735),
+            CLLocationCoordinate2D(latitude: 37.22924, longitude: -80.42726),
+            CLLocationCoordinate2D(latitude: 37.22933, longitude: -80.42715),
+            CLLocationCoordinate2D(latitude: 37.22940, longitude: -80.42723)],
+              detected: false),
+        Rooms(name: "NCB130", coordinates: [
+            CLLocationCoordinate2D(latitude: 37.22955, longitude: -80.42703),
+            CLLocationCoordinate2D(latitude: 37.22949, longitude: -80.42695),
+            CLLocationCoordinate2D(latitude: 37.22941, longitude: -80.42705),
+            CLLocationCoordinate2D(latitude: 37.22948, longitude: -80.42714)],
             detected: false),
-        Rooms(name: "DND102", coordinates: [
-            CLLocationCoordinate2D(latitude: 37.23182, longitude: -80.42752),
-            CLLocationCoordinate2D(latitude: 37.23172, longitude: -80.42739),
-            CLLocationCoordinate2D(latitude: 37.23177, longitude: -80.42759),
-            CLLocationCoordinate2D(latitude: 37.23173, longitude: -80.42743)],
-            detected: false)
-    ]
-    //put the closest exits first
-    @Published var exits: [Exits] = [
-        Exits(name: "Main", coordinates:
-            CLLocationCoordinate2D(latitude: 37.23160, longitude: -80.42738),
-            highlighted: false),
-        Exits(name: "1", coordinates:
-            CLLocationCoordinate2D(latitude: 37.23124, longitude: -80.42745),
-            highlighted: false)
+        Rooms(name: "NCB110", coordinates: [
+            CLLocationCoordinate2D(latitude: 37.22961, longitude: -80.42680),
+            CLLocationCoordinate2D(latitude: 37.22952, longitude: -80.42692),
+            CLLocationCoordinate2D(latitude: 37.22958, longitude: -80.42700),
+            CLLocationCoordinate2D(latitude: 37.22968, longitude: -80.42688)],
+            detected: false),
+        
     ]
     
+    //put the closest exits first
+    @Published var exits: [Exits] = [
+        Exits(name: "2", coordinates:
+            CLLocationCoordinate2D(latitude: 37.22923, longitude: -80.42730),
+            highlighted: false),
+        Exits(name: "Main", coordinates:
+                CLLocationCoordinate2D(latitude: 37.22951, longitude: -80.42673),
+            highlighted: false),
+        
+        
+    ]
+    
+//    @Published var exits: [Exits] = [
+//        Exits(name: "Main", coordinates:
+//                CLLocationCoordinate2D(latitude: 37.23227, longitude: -80.42565),
+//            highlighted: false),
+//        Exits(name: "1", coordinates:
+//                CLLocationCoordinate2D(latitude: 37.23254, longitude: -80.42595),
+//            highlighted: false)
+//    ]
+    
     @Published var regularPoints: [RegularPoint] = [
-            RegularPoint(coordinate: CLLocationCoordinate2D(latitude: 37.23190, longitude: -80.42745)),
-            RegularPoint(coordinate: CLLocationCoordinate2D(latitude: 37.2321, longitude: -80.42740))]
+            RegularPoint(coordinate: CLLocationCoordinate2D(latitude: 37.22951, longitude: -80.42686))]
     
     @Published var perpetratorLocation: CLLocationCoordinate2D?
     
@@ -122,8 +140,7 @@ class MapVM: ObservableObject {
     func addpoints() {
         DispatchQueue.main.async {
             self.shortestPath.append(contentsOf: [ self.rooms.first!.centerCoordinate,
-                    CLLocationCoordinate2D(latitude: 37.23190, longitude: -80.42745),
-                    CLLocationCoordinate2D(latitude: 37.23190, longitude: -80.42690),
+                                                CLLocationCoordinate2D(latitude: 37.22951, longitude: -80.42686),
                                                    self.exits.first!.coordinates])
             }
     }
@@ -309,6 +326,7 @@ class MapVM: ObservableObject {
         print(response)
         do {
             let decoder = JSONDecoder()
+            
             return try decoder.decode(ShooterStatus.self, from: data)
         } catch {
             throw GHError.invalidData

@@ -98,7 +98,7 @@ struct ContentView: View {
     }
 
     func authenticateUser(username: String, password: String) {
-        if username.lowercased() == "grover@vt.edu" || username.lowercased() == "rushil@vt.edu" || username.lowercased() == "advay@vt.edu"{
+        if username.lowercased() == "grover@vt.edu" || username.lowercased() == "rushil@umd.edu" || username.lowercased() == "advay@vt.edu"{
             wrongUsername = 0
             if password.lowercased() == "rest" {
                 wrongPassword = 0

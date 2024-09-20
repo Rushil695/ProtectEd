@@ -8,6 +8,9 @@ struct CardView: View {
     @Binding var position : MapCameraPosition
     @Binding var room: String
     @Binding var time: String
+    @EnvironmentObject var mapvm: MapVM
+    
+   
     
     var body: some View {
         if detection == ""  {
@@ -72,7 +75,20 @@ struct CardView: View {
                             .padding(.leading, 50)
                             .padding(.top)
                             .bold()
-                        Button(action: {}, label: {
+                        Button(action: {
+                            mapvm.shooterdetection = "Audio"
+                            mapvm.shooter.incident_source = "Audio"
+                            let dateFormatter = DateFormatter()
+                            dateFormatter.dateFormat = "h:mm a" // This will format the time as "12:08 PM"
+                            let currentTime = dateFormatter.string(from: Date())
+
+                            mapvm.shooter.event_time = currentTime
+                            
+                            mapvm.shooter.event_time = currentTime
+                            audiovm.confidence = 0.9
+                            mapvm.addpoints()
+                            mapvm.rooms[0].detected = true
+                        }, label: {
                             Image(systemName: "arrow.forward").foregroundStyle(.main)
                                 .imageScale(.medium).padding(.trailing)
                         })
@@ -107,7 +123,7 @@ struct CardView: View {
                         Button(action: {
                             withAnimation {
                                 position = .camera(
-                                    .init(centerCoordinate: CLLocationCoordinate2D(latitude: 37.23125, longitude: -80.42744), distance: 380)
+                                    .init(centerCoordinate: CLLocationCoordinate2D(latitude: 37.2291, longitude: -80.42699), distance: 380)
                                 )
                             }
                         }) {
@@ -130,8 +146,15 @@ struct CardView: View {
                                     .font(.title2)
                                     .foregroundStyle(.white)
                                     .bold()
+                                Button(action: {
+                                    mapvm.addpoints()
+                                }, label: {
+                                    Image(systemName: "arrow.forward").foregroundStyle(.red)
+                                        .imageScale(.small).padding(.trailing)
+                                })
                                 
                             }
+                            
                             Text("Time: " + time)
                                 .font(.title3)
                                 .foregroundStyle(.white)
