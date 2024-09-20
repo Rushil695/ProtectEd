@@ -23,6 +23,7 @@
 		CE06016D2C96348700F37603 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CE06015D2C96348700F37603 /* Assets.xcassets */; };
 		CE06016E2C96348700F37603 /* Gunshot.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = CE06015E2C96348700F37603 /* Gunshot.mlmodel */; };
 		CE0601702C96348700F37603 /* ProtectEdApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE0601602C96348700F37603 /* ProtectEdApp.swift */; };
+		CE0601792C96CE7A00F37603 /* Djikstras.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE0601782C96CE7A00F37603 /* Djikstras.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -63,6 +64,7 @@
 		CE06015E2C96348700F37603 /* Gunshot.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = Gunshot.mlmodel; sourceTree = "<group>"; };
 		CE06015F2C96348700F37603 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CE0601602C96348700F37603 /* ProtectEdApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProtectEdApp.swift; sourceTree = "<group>"; };
+		CE0601782C96CE7A00F37603 /* Djikstras.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Djikstras.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -149,6 +151,7 @@
 			isa = PBXGroup;
 			children = (
 				CE0601552C96348700F37603 /* MapVM.swift */,
+				CE0601782C96CE7A00F37603 /* Djikstras.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -315,6 +318,7 @@
 				CE06016B2C96348700F37603 /* MapView.swift in Sources */,
 				CE0601632C96348700F37603 /* AudioClassifier.swift in Sources */,
 				CE0601642C96348700F37603 /* Models.swift in Sources */,
+				CE0601792C96CE7A00F37603 /* Djikstras.swift in Sources */,
 				CE0601702C96348700F37603 /* ProtectEdApp.swift in Sources */,
 				CE0601692C96348700F37603 /* ContentView.swift in Sources */,
 				CE06016C2C96348700F37603 /* ScheduleView.swift in Sources */,

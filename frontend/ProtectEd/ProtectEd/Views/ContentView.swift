@@ -41,15 +41,14 @@ struct ContentView: View {
                     
                     HStack {
                         TextField("Email", text: $username)
-                        
                             .padding()
                             .frame(width: 280, height: 50)
                             .cornerRadius(45)
                             .border(Color.red, width: CGFloat(wrongUsername))
                             .textInputAutocapitalization(.never)
                             .autocorrectionDisabled(true)
-                            Image(systemName: "envelope.fill").foregroundStyle(.black)
-                            
+                        Image(systemName: "envelope.fill").foregroundStyle(.main)
+                            .padding(.trailing)
                         }
 
                     .background(RoundedRectangle(cornerRadius: 35).fill(.gray).opacity(0.2))
@@ -59,13 +58,14 @@ struct ContentView: View {
                     
                     HStack {
                         SecureField("Password", text: $password)
-                        
                             .padding()
                             .frame(width: 280, height: 50)
                             .cornerRadius(45)
                             .cornerRadius(10)
                             .border(Color.red, width: CGFloat(wrongPassword))
-                            Image(systemName: "key.fill").foregroundStyle(.black)
+                        Image(systemName: "key.fill").foregroundStyle(.main)
+                            .padding(.trailing)
+
                     }
 
                     .background(RoundedRectangle(cornerRadius: 35).fill(.gray).opacity(0.2))
@@ -98,11 +98,7 @@ struct ContentView: View {
     }
 
     func authenticateUser(username: String, password: String) {
-<<<<<<< HEAD
-        if username.lowercased() == "grover@vt.edu" || username.lowercased() == "madhu@vt.edu" || username.lowercased() == "choudhary@vt.edu"{
-=======
-        if username.lowercased() == "grover@vt.edu" || username.lowercased() == "rushil@vt.edu" || username.lowercased() == "advay@vt.edu"{
->>>>>>> ac01d464d2ccd91d0bbb79b34438f5c5e49925ef
+        if username.lowercased() == "grover@vt.edu" || username.lowercased() == "rushil@umd.edu" || username.lowercased() == "advay@vt.edu"{
             wrongUsername = 0
             if password.lowercased() == "rest" {
                 wrongPassword = 0

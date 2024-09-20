@@ -4,7 +4,9 @@
 <dict>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>We need access to the Microphone to detect intruders</string>
-	<key>NSLocationAlwaysUsageDescription</key>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>We need access to the location </string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string></string>
 </dict>
 </plist>

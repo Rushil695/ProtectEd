@@ -1,3 +1,5 @@
+// MapVM.swift
+
 import Foundation
 import MapKit
 import CoreLocation
@@ -6,35 +8,269 @@ class MapVM: ObservableObject {
     @Published var shooter: ShooterStatus = ShooterStatus(room_number: "XXX", event_time: "", incident_source: "Audio", message: "")
     @Published var timer: Timer?
     @Published var shooterdetection = ""
-    @Published var userLocation: CLLocationCoordinate2D?
     var locationManager = LocationManager()
-    @Published var rooms: [Rooms] = [Rooms(name: "DND101", coordinates: [
-        CLLocationCoordinate2D(latitude: 37.23193, longitude: -80.42738),
-        CLLocationCoordinate2D(latitude: 37.23184, longitude: -80.42727),
-        CLLocationCoordinate2D(latitude: 37.23180, longitude: -80.42737),
-        CLLocationCoordinate2D(latitude: 37.23187, longitude: -80.42745)],
-                                           detected: false),
-                                            Rooms(name: "DND102", coordinates: [
-                                            CLLocationCoordinate2D(latitude: 37.23182, longitude: -80.42752),
-                                            CLLocationCoordinate2D(latitude: 37.23172, longitude: -80.42739),
-                                            CLLocationCoordinate2D(latitude: 37.23177, longitude: -80.42759),
-                                            CLLocationCoordinate2D(latitude: 37.23173, longitude: -80.42743)],
-                                                    
-                                                  detected: false)]
-    @Published var exits = [Exits(name: "Main", coordinates:
-                                    CLLocationCoordinate2D(latitude: 37.23160, longitude: -80.42738),
-                                  highlighted: false)]
-    
-    var ngronk = "https://bb45-2607-b400-26-0-8477-7abe-92b7-b1dd.ngrok-free.app"
+    var ngronk = "https://c2fd-129-2-192-16.ngrok-free.app"
     
     
     
-    //updates the room's detected variable as true and sends the log to the backend
+    
+    
+    @Published var userLocation = CLLocationCoordinate2D(latitude: 37.23186, longitude: 80.42737)
+
+    @Published var rooms: [Rooms] = [
+        Rooms(name: "NCB270", coordinates: [
+            CLLocationCoordinate2D(latitude: 37.22931, longitude: -80.42735),
+            CLLocationCoordinate2D(latitude: 37.22924, longitude: -80.42726),
+            CLLocationCoordinate2D(latitude: 37.22933, longitude: -80.42715),
+            CLLocationCoordinate2D(latitude: 37.22940, longitude: -80.42723)],
+              detected: false),
+        Rooms(name: "NCB130", coordinates: [
+            CLLocationCoordinate2D(latitude: 37.22955, longitude: -80.42703),
+            CLLocationCoordinate2D(latitude: 37.22949, longitude: -80.42695),
+            CLLocationCoordinate2D(latitude: 37.22941, longitude: -80.42705),
+            CLLocationCoordinate2D(latitude: 37.22948, longitude: -80.42714)],
+            detected: false),
+        Rooms(name: "NCB110", coordinates: [
+            CLLocationCoordinate2D(latitude: 37.22961, longitude: -80.42680),
+            CLLocationCoordinate2D(latitude: 37.22952, longitude: -80.42692),
+            CLLocationCoordinate2D(latitude: 37.22958, longitude: -80.42700),
+            CLLocationCoordinate2D(latitude: 37.22968, longitude: -80.42688)],
+            detected: false),
+        
+    ]
+    
+    //put the closest exits first
+    @Published var exits: [Exits] = [
+        Exits(name: "2", coordinates:
+            CLLocationCoordinate2D(latitude: 37.22923, longitude: -80.42730),
+            highlighted: false),
+        Exits(name: "Main", coordinates:
+                CLLocationCoordinate2D(latitude: 37.22951, longitude: -80.42673),
+            highlighted: false),
+        
+        
+    ]
+    
+//    @Published var exits: [Exits] = [
+//        Exits(name: "Main", coordinates:
+//                CLLocationCoordinate2D(latitude: 37.23227, longitude: -80.42565),
+//            highlighted: false),
+//        Exits(name: "1", coordinates:
+//                CLLocationCoordinate2D(latitude: 37.23254, longitude: -80.42595),
+//            highlighted: false)
+//    ]
+    
+    @Published var regularPoints: [RegularPoint] = [
+            RegularPoint(coordinate: CLLocationCoordinate2D(latitude: 37.22951, longitude: -80.42686))]
+    
+    @Published var perpetratorLocation: CLLocationCoordinate2D?
+    
+    //put the user location adn regularpoints and exits
+    @Published var shortestPath: [CLLocationCoordinate2D] = []
+    
+    
+    
+    
+    // Dijkstra's Algorithm with avoidance
+    func dijkstra(source: Node, destination: Node, graph: [Node], perpetratorLocation: CLLocationCoordinate2D, avoidanceRadius: Double) -> [Node]? {
+        print("Starting Dijkstra's algorithm.")
+        var distances = [Node: Double]()
+        var previousNodes = [Node: Node]()
+        var unvisited = Set(graph)
+        
+        // Initialize distances
+        for node in graph {
+            distances[node] = Double.infinity
+        }
+        distances[source] = 0.0
+        print("Initialized distances.")
+        
+        // Main Dijkstra Loop
+        while !unvisited.isEmpty {
+            // Find the node with the smallest distance
+            guard let currentNode = unvisited.min(by: { distances[$0, default: Double.infinity] < distances[$1, default: Double.infinity] }) else {
+                print("No reachable remaining nodes.")
+                break
+            }
+            unvisited.remove(currentNode)
+            print("Visiting node: \(currentNode.name)")
+            
+            // Stop if we've reached the destination
+            if currentNode == destination {
+                print("dijkstra: Destination node reached.")
+                break
+            }
+            
+            // Update distances for each neighbor
+            for (neighbor, baseDistance) in currentNode.neighbors {
+                if !unvisited.contains(neighbor) { continue }
+                
+                let alt = distances[currentNode]! + baseDistance
+                print("alt: \(alt)")
+                
+                if alt < distances[neighbor, default: Double.infinity] {
+                    distances[neighbor] = alt
+                    previousNodes[neighbor] = currentNode
+                    print("Updated distance for node \(neighbor.name): \(alt) meters")
+                }
+            }
+        }
+        
+        // Reconstruct the shortest path
+        var path: [Node] = []
+        
+        // We should start by adding the destination node to the path
+        var currentNode: Node? = destination
+        
+        while let node = currentNode {
+            path.insert(node, at: 0)  // Insert at the beginning to construct the path in the correct order
+            currentNode = previousNodes[node]  // Move to the previous node in the path
+        }
+        
+        // Ensure the destination node was added (in case it was not reachable)
+        if path.isEmpty || path.first != source {
+            print(" dijkstra: No path could be reconstructed.")
+            return nil
+        }
+        
+        print("Path reconstructed: \(path.map { $0.name })")
+        return path
+    }
+    
+    func addpoints() {
+        DispatchQueue.main.async {
+            self.shortestPath.append(contentsOf: [ self.rooms.first!.centerCoordinate,
+                                                CLLocationCoordinate2D(latitude: 37.22951, longitude: -80.42686),
+                                                   self.exits.first!.coordinates])
+            }
+    }
+    // setupGraph
+    
+    // Check both user and perpetrator locations before calculating the path
+    func checkAndCalculatePath() {
+        if let perpetratorLocation = self.perpetratorLocation {
+            print("User location: \(userLocation)")
+            print("Perpetrator location: \(perpetratorLocation)")
+            
+            // Call the path calculation function if both locations are available
+            calculateShortestPath(userLocation: userLocation, perpetratorLocation: perpetratorLocation)
+        } else {
+            print("Either userLocation or perpetratorLocation is missing.")
+        }
+    }
+    
+    func calculateShortestPath(userLocation: CLLocationCoordinate2D, perpetratorLocation: CLLocationCoordinate2D) {
+        print("Calculating shortest path from userLocation: \(userLocation) to perpetratorLocation: \(perpetratorLocation)")
+        
+        let graph = setupGraph(rooms: rooms, exits: exits, regularPoints: regularPoints, perpetratorLocation: perpetratorLocation)
+        print("Graph setup completed with \(graph.count) nodes.")
+        
+        // Create a user node
+        var userNode = Node(name: "User", coordinate: userLocation)
+        
+        // Find the nearest exit node
+        guard let nearestExit = exits.min(by: {
+            userNode.distance(to: Node(name: $0.name, coordinate: $0.coordinates)) <
+            userNode.distance(to: Node(name: $1.name, coordinate: $1.coordinates))
+        }) else {
+            print("No exits found.")
+            return
+        }
+        let exitNode = Node(name: nearestExit.name, coordinate: nearestExit.coordinates)
+        print("Nearest exit found: \(exitNode.name) at \(exitNode.coordinate)")
+        
+        // Add the user node to the graph
+        var extendedGraph = graph
+        extendedGraph.append(userNode)
+        for node in graph {
+            let distance = userNode.distance(to: node)
+            userNode.neighbors[node] = distance
+        }
+        print("User node added to the graph.")
+        
+        // Run Dijkstra's algorithm to find the shortest path
+        if let path = dijkstra(source: userNode, destination: exitNode, graph: extendedGraph, perpetratorLocation: perpetratorLocation, avoidanceRadius: 10.0) {
+            print("calculateShortestPath: Shortest path found with \(path.count) nodes: \(path.map { $0.name })")
+            DispatchQueue.main.async {
+                self.shortestPath = path.map { $0.coordinate }
+                print("Updated shortest path with coordinates: \(self.shortestPath)")
+            }
+        } else {
+            print("No path found.")
+        }
+    }
+
+    
+    func setupGraph(rooms: [Rooms], exits: [Exits], regularPoints: [RegularPoint], perpetratorLocation: CLLocationCoordinate2D) -> [Node] {
+        var graph: [Node] = []
+        
+        // Step 1: Create nodes for rooms
+        let roomNodes = rooms.map { room -> Node in
+            var node = Node(name: room.name, coordinate: room.centerCoordinate)
+            return node
+        }
+        
+        // Step 2: Create nodes for exits
+        let exitNodes = exits.map { exit -> Node in
+            var node = Node(name: exit.name, coordinate: exit.coordinates)
+            return node
+        }
+        
+        // Step 3: Create nodes for regular points (hallways, intersections, etc.)
+        let regularNodes = regularPoints.map { point -> Node in
+            var node = Node(name: "Point \(point.coordinate.latitude), \(point.coordinate.longitude)", coordinate: point.coordinate)
+            return node
+        }
+        
+        // Combine all nodes into one graph
+        graph = roomNodes + exitNodes + regularNodes
+        
+        // Step 4: Calculate neighbors and distances
+        for i in 0..<graph.count {
+            for j in 0..<graph.count where i != j {
+                let distance = graph[i].distance(to: graph[j])
+                graph[i].neighbors[graph[j]] = distance
+            }
+        }
+        
+        // Step 5: Add avoidance logic for nodes near the perpetrator's location
+        let avoidanceRadius = 50.0 // meters
+        for i in 0..<graph.count {
+            let distanceToPerpetrator = graph[i].distance(to: Node(name: "Perpetrator", coordinate: perpetratorLocation))
+            if distanceToPerpetrator < avoidanceRadius {
+                // Increase the distance (penalty) for nodes near the perpetrator
+                for j in 0..<graph.count where i != j {
+                    graph[i].neighbors[graph[j]] = (graph[i].neighbors[graph[j]] ?? 0) + 1000.0 // Add a large penalty
+                }
+            }
+        }
+        
+        return graph
+    }
+
+
+    
+    
+    func setPerpetratorLocation(to location: CLLocationCoordinate2D) {
+        DispatchQueue.main.async {
+            self.perpetratorLocation = location
+            print("Perpetrator location set to \(location)")
+            self.checkAndCalculatePath()
+        }
+    }
+
+    
+    
+
+// MARK : Backend Requests
+    // Updates the room's detected variable as true and sends the log to the backend
     func shooterDetected(roomnumber: String) async {
         DispatchQueue.main.async {
             if let index = self.rooms.firstIndex(where: { $0.name == roomnumber }) {
                 self.rooms[index].detected = true
                 print("Room \(roomnumber) detected status set to true.")
+                self.perpetratorLocation = self.rooms[index].centerCoordinate
+                print("Perpetrator location set to \(self.perpetratorLocation!)")
             } else {
                 print("Room with name \(roomnumber) not found in rooms array.")
             }
@@ -44,7 +280,7 @@ class MapVM: ObservableObject {
             return
         }
         
-        // Get current time in HH:MM:SS format
+        // Get current time in HH:mm:ss format
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "HH:mm:ss"
         let eventTime = dateFormatter.string(from: Date())
@@ -76,13 +312,7 @@ class MapVM: ObservableObject {
         } catch {
             print("Error sending shooter detected request: \(error)")
         }
-        
     }
-    
-    
-    
-    
-    
     
     func sendGetRequest1second() async throws -> ShooterStatus {
         guard let url = URL(string: ngronk + "/report-event/") else {
@@ -96,13 +326,14 @@ class MapVM: ObservableObject {
         print(response)
         do {
             let decoder = JSONDecoder()
+            
             return try decoder.decode(ShooterStatus.self, from: data)
         } catch {
             throw GHError.invalidData
         }
     }
     
-    //sends the post requests every second
+    // Sends the GET requests every second
     func startPolling() {
         timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
             Task {
@@ -119,24 +350,25 @@ class MapVM: ObservableObject {
         }
     }
     
-    //if a shooter is detected then for that room make the detected true
+    // If a shooter is detected, mark the room as detected
     func updateRoomDetectionStatus(with status: ShooterStatus) {
-        if status.message != "No incidents available"{
+        if status.message != "No incidents available" {
             if let index = rooms.firstIndex(where: { $0.name == status.room_number }) {
                 self.shooterdetection = status.incident_source
                 rooms[index].detected = true
+                self.perpetratorLocation = rooms[index].centerCoordinate
                 self.stopPolling()
             }
         }
     }
-    
-    
     
     func stopPolling() {
         timer?.invalidate()
     }
 }
 
+
+// MARK : Location Manager
 struct Location: Equatable {
     let coordinate: CLLocationCoordinate2D?
     
