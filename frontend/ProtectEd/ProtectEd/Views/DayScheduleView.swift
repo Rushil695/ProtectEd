@@ -29,13 +29,10 @@ struct DayScheduleView: View {
                     .padding(.leading, 30)
                     .padding(.bottom, 10)
 
-<<<<<<< HEAD
-               Button(action: {
-                    classes.append(Class(name: "", startTime: Date(), endTime: Date(), room: defaultRoom))
-=======
+
                 Button(action: {
                     classes.append(Class(name: "", startTime: Date(), room: defaultRoom))
->>>>>>> ac01d464d2ccd91d0bbb79b34438f5c5e49925ef
+
                     
                }){
                     Image(systemName: "plus.circle.fill")
@@ -64,6 +61,7 @@ struct DayScheduleView: View {
                         .cornerRadius(10)
                     
                     TextField("Room", text: $classItem.room.name)
+                        .padding()
                         .frame(width: 100, height: 35)
                         .background(Color.gray.opacity(0.4))
                         .foregroundColor(.black)

@@ -4,15 +4,21 @@ import MapKit
 struct MapView: View {
     var timetable: Timetable
     @StateObject var mapvm = MapVM()
-    @State private var position: MapCameraPosition = .camera(
-        .init(centerCoordinate: CLLocationCoordinate2D(latitude: 37.23125, longitude: -80.42744), distance: 380))
+   // @State private var position: MapCameraPosition = .camera(.init(centerCoordinate: CLLocationCoordinate2D(latitude: 37.23125, longitude: -80.42744), distance: 380))
+    
+//    @State private var position: MapCameraPosition = .camera(.init(centerCoordinate: CLLocationCoordinate2D(latitude: 37.2321, longitude: -80.4258), distance :380))
+    
+    @State private var position: MapCameraPosition = .camera(.init(centerCoordinate: CLLocationCoordinate2D(latitude: 37.2291, longitude: -80.42699), distance: 300))
+    
     @StateObject var audiovm = AudioClassifier()
+    
+  
+   
     
     func getCurrentClass() -> Class? {
         let currentWeekday: Weekday = .monday // Forcing it to Monday for testing purposes
 
         guard let classesToday = timetable.schedule[currentWeekday] else {
-            print("No classes found for \(currentWeekday)")
             return nil
         }
 
@@ -35,7 +41,6 @@ struct MapView: View {
             // If this is the last class of the day, treat it as spanning to the end of the day
             if index == classesToday.count - 1 {
                 if nowTotalMinutes >= startTotalMinutes {
-                    print("Current class found: \(currentClass.name)")
                     return currentClass
                 }
             } else {
@@ -48,13 +53,10 @@ struct MapView: View {
                 let nextStartTotalMinutes = nextStartHour * 60 + nextStartMinute
 
                 if nowTotalMinutes >= startTotalMinutes && nowTotalMinutes < nextStartTotalMinutes {
-                    print("Current class found: \(currentClass.name)")
                     return currentClass
                 }
             }
         }
-        
-        print("No current class matches the current time")
         return nil
     }
     
@@ -76,6 +78,14 @@ struct MapView: View {
                                 .frame(width: 30, height: 30)
                         }
                     }
+                    
+                    
+                    // Draw the shortest path
+                    if !mapvm.shortestPath.isEmpty {
+                        MapPolyline(coordinates: mapvm.shortestPath)
+                            .stroke(Color.blue, lineWidth: 4)
+                    }
+                
                     if let userLocation = mapvm.locationManager.location.coordinate {
                         Annotation("Your Location", coordinate: userLocation) {
                             Image(systemName: "location.north.fill")
@@ -88,14 +98,15 @@ struct MapView: View {
                     VStack {
                         Spacer()
                         
-                        CardView(detection: $mapvm.shooterdetection, position: $position, room: .constant(currentClass.room.name))
+                        CardView(detection: $mapvm.shooterdetection, position: $position, room: .constant(currentClass.room.name), time: $mapvm.shooter.event_time)
                             .environmentObject(audiovm)
+                            .environmentObject(mapvm)
                             .opacity(0.9)
                     }
                 } else {
                     VStack {
                         Spacer()
-                        CardView(detection: $mapvm.shooterdetection, position: $position, room: .constant("No Class"))
+                        CardView(detection: $mapvm.shooterdetection, position: $position, room: .constant("No Class"), time: $mapvm.shooter.event_time)
                             .environmentObject(audiovm)
                             .opacity(0.9)
                     }
@@ -108,15 +119,24 @@ struct MapView: View {
                 mapvm.stopPolling()
             }
             .onChange(of: audiovm.detectedSound) {
-                if audiovm.detectedSound == "Guns" && audiovm.confidence > 0.8 {
+                if audiovm.detectedSound == "Guns" && audiovm.confidence > 0.5 {
                     mapvm.stopPolling()
                     mapvm.shooterdetection = "Audio"
                     
                     audiovm.stopListening()
                     Task {
                         await mapvm.shooterDetected(roomnumber: getCurrentClass()?.room.name ?? "x")}
+                    
+                    print(mapvm.shortestPath)
+                    
+                    
                 }
+                mapvm.rooms[0].detected = true
+                mapvm.setPerpetratorLocation(to: getCurrentClass()?.room.centerCoordinate ?? CLLocationCoordinate2D(latitude: 37.23193, longitude: -80.42738))
+                mapvm.checkAndCalculatePath()
             }
+            
+        
         }.navigationBarBackButtonHidden()
     }
 }
